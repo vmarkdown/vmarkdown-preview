@@ -16,7 +16,7 @@ const md = require('../md/demo.md');
     editor.on('cursorChange', function (cursor) {
 
         console.log(cursor);
-        localStorage.setItem("cursor", JSON.stringify(cursor));
+        localStorage.setItem("cursorChange", JSON.stringify(cursor));
 
     });
 
@@ -24,14 +24,14 @@ const md = require('../md/demo.md');
         console.log(editor.getFirstVisibleLine());
         // localStorage.setItem("cursor", JSON.stringify(cursor));
         // localStorage.setItem("markdown", editor.getValue());
-        localStorage.setItem("firstVisibleLine", editor.getFirstVisibleLine());
+        localStorage.setItem("firstVisibleLineChange", editor.getFirstVisibleLine());
 
     }
 
     editor.on('scroll', _.throttle(onScroll, 300));
 
     function onChange() {
-        localStorage.setItem("markdown", editor.getValue());
+        localStorage.setItem("change", editor.getValue());
     }
 
     editor.on('change', _.debounce(onChange, 500));

@@ -1,17 +1,5 @@
 require('./vamrkdown-preview.scss');
-
 import Preview from './base/preview';
-
-// $.extend($.scrollTo.defaults, {
-//     axis: 'y',
-//     duration: 300
-// });
-
-// function scrollTo(target, options) {
-//     $(window).stop();
-//     $(window).scrollTo(target, options);
-// }
-
 const ACTIVE_CLASS = 'vamrkdown-preview-active';
 
 export default class VMarkDownPreview extends Preview {
@@ -19,46 +7,16 @@ export default class VMarkDownPreview extends Preview {
     constructor(options) {
         super();
         const self = this;
-        self.vdom = null;
         self.$scrollContainer = $(options.scrollContainer || window);
-
-        self.preview = new Vue({
-            el: options.markdownContainer,
-            render(h) {
-                self.h = h;
-                return self.vdom;
-                // return self.vmarkdown.compile(h);
-                // return self.vmarkdown.compile(h);
-            }
-        });
-
-
-        // self.vmarkdown = options.vmarkdown;
-        // self.preview = new Vue({
-        //     el: options.container,
-        //     render(h) {
-        //         return self.vmarkdown.compile(h);
-        //     }
-        // });
-        //
-        // self.vmarkdown.on('change', function () {
-        //     self.preview.$forceUpdate();
-        // });
-        //
-        // self.vmarkdown.on('firstVisibleLineChange', function (firstVisibleLine) {
-        //     self.scrollToLine(firstVisibleLine);
-        // });
-        //
-        // self.vmarkdown.on('cursorChange', function (cursor) {
-        //     self.activeTo(cursor);
-        // });
+        self.activeEl = null;
     }
 
     // on(type, handler) {
     //
     // }
 
-    scrollTo() {
+
+    setValue() {
 
     }
 
@@ -68,99 +26,32 @@ export default class VMarkDownPreview extends Preview {
         self.$scrollContainer.scrollTo(target, options);
     }
 
-    scrollToLine(line) {
-
+    scrollTo(target) {
         const self = this;
-
-        const node = self.vmarkdown.findNodeFromLine(line);
-        // const self = this;
-        //
-        // const node = NodeUtil.findNodeFromLine(self.hast, line);
-        //
-        // console.log(node);
-        //
-        if(!node) return;
-
-        const id = node.properties.id;
-
-        const dom = document.getElementById(id);
-
-        console.log(dom);
-
-        if(!dom) return;
-
-        // dom.scrollIntoView();
-        self._scrollTo(dom, {
+        self._scrollTo(target, {
             axis: 'y',
             duration: 300
         });
     }
 
-    activeTo(position) {
+    activeTo(target) {
         const self = this;
 
-        const node = self.vmarkdown.findNode(position);
+        if(self.activeEl) {
+            self.activeEl.removeClass(ACTIVE_CLASS);
+        }
 
-        if(!node) return;
+        var $dom = $(target);
+        $dom.addClass(ACTIVE_CLASS);
+        self.activeEl = $dom;
 
-        const id = node.properties.id;
+        if($dom.length === 0) {
+            return;
+        }
 
-        const dom = document.getElementById(id);
-
-        console.log(dom);
-
-        if(!dom) return;
-
-        $(self.preview.$el).find('.'+ACTIVE_CLASS).removeClass(ACTIVE_CLASS);
-        $(dom).addClass(ACTIVE_CLASS);
+        var dom = $dom[0];
 
         dom.scrollIntoViewIfNeeded();
-        // scrollTo(dom, {
-        //     over: 0.5,
-        //     offset: -1 * ($(window).height() / 2)
-        // });
-    }
-
-
-    __activeToLine(line) {
-        const self = this;
-
-        const node = self.vmarkdown.findNodeByLine(line);
-
-        if(!node) return;
-
-        const id = node.properties.id;
-
-        const dom = document.getElementById(id);
-
-        console.log(dom);
-
-        if(!dom) return;
-
-        $(self.preview.$el).find('.active-line').removeClass(ACTIVE_CLASS);
-        $(dom).addClass(ACTIVE_CLASS);
-
-        scrollTo(dom, {
-            // over: 3,
-            offset: -1 * ($(window).height() / 2)
-        });
-
-
-        // scrollTo(dom);
-
-        // const hash = node.hash;
-        //
-        // const $target = $('[data-hash='+hash+']');
-        //
-        // $('.active').removeClass('active');
-        //
-        // $target.addClass('active');
-        //
-        //
-        // if($target.length>0) {
-        //     $target[0].scrollIntoViewIfNeeded();
-        //     // scrollTo($target[0]);
-        // }
     }
 
 }
