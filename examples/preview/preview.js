@@ -4,6 +4,7 @@ const vmarkdown = new VMarkDown();
 import Preview from '../../src/vamrkdown-preview';
 const preview = new Preview({
     container: '#preview',
+    scrollContainer: '#preview',
     vmarkdown: vmarkdown
 });
 

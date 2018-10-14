@@ -19,6 +19,7 @@ export default class VMarkDownPreview extends Preview {
     constructor(options) {
         super();
         const self = this;
+        self.$scrollContainer = $(options.scrollContainer || window);
 
         self.vmarkdown = options.vmarkdown;
         self.preview = new Vue({
@@ -31,6 +32,14 @@ export default class VMarkDownPreview extends Preview {
         self.vmarkdown.on('change', function () {
             self.preview.$forceUpdate();
         });
+
+        self.vmarkdown.on('firstVisibleLineChange', function (firstVisibleLine) {
+            self.scrollToLine(firstVisibleLine);
+        });
+
+        self.vmarkdown.on('cursorChange', function (cursor) {
+            self.activeTo(cursor);
+        });
     }
 
     on(type, handler) {
@@ -39,6 +48,12 @@ export default class VMarkDownPreview extends Preview {
 
     scrollTo() {
 
+    }
+
+    _scrollTo(target, options) {
+        const self = this;
+        self.$scrollContainer.stop();
+        self.$scrollContainer.scrollTo(target, options);
     }
 
     scrollToLine(line) {
@@ -63,7 +78,7 @@ export default class VMarkDownPreview extends Preview {
         if(!dom) return;
 
         // dom.scrollIntoView();
-        scrollTo(dom);
+        self._scrollTo(dom);
     }
 
     activeTo(position) {
@@ -81,7 +96,7 @@ export default class VMarkDownPreview extends Preview {
 
         if(!dom) return;
 
-        $(self.preview.$el).find('.active-line').removeClass(ACTIVE_CLASS);
+        $(self.preview.$el).find('.'+ACTIVE_CLASS).removeClass(ACTIVE_CLASS);
         $(dom).addClass(ACTIVE_CLASS);
 
         dom.scrollIntoViewIfNeeded();
