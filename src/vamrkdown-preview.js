@@ -1,16 +1,16 @@
 require('./vamrkdown-preview.scss');
 
-import Preview from './util/preview';
+import Preview from './base/preview';
 
-$.extend($.scrollTo.defaults, {
-    axis: 'y',
-    duration: 300
-});
+// $.extend($.scrollTo.defaults, {
+//     axis: 'y',
+//     duration: 300
+// });
 
-function scrollTo(target, options) {
-    $(window).stop();
-    $(window).scrollTo(target, options);
-}
+// function scrollTo(target, options) {
+//     $(window).stop();
+//     $(window).scrollTo(target, options);
+// }
 
 const ACTIVE_CLASS = 'vamrkdown-preview-active';
 
@@ -19,32 +19,44 @@ export default class VMarkDownPreview extends Preview {
     constructor(options) {
         super();
         const self = this;
+        self.vdom = null;
         self.$scrollContainer = $(options.scrollContainer || window);
 
-        self.vmarkdown = options.vmarkdown;
         self.preview = new Vue({
-            el: options.container,
+            el: options.markdownContainer,
             render(h) {
-                return self.vmarkdown.compile(h);
+                self.h = h;
+                return self.vdom;
+                // return self.vmarkdown.compile(h);
+                // return self.vmarkdown.compile(h);
             }
         });
 
-        self.vmarkdown.on('change', function () {
-            self.preview.$forceUpdate();
-        });
 
-        self.vmarkdown.on('firstVisibleLineChange', function (firstVisibleLine) {
-            self.scrollToLine(firstVisibleLine);
-        });
-
-        self.vmarkdown.on('cursorChange', function (cursor) {
-            self.activeTo(cursor);
-        });
+        // self.vmarkdown = options.vmarkdown;
+        // self.preview = new Vue({
+        //     el: options.container,
+        //     render(h) {
+        //         return self.vmarkdown.compile(h);
+        //     }
+        // });
+        //
+        // self.vmarkdown.on('change', function () {
+        //     self.preview.$forceUpdate();
+        // });
+        //
+        // self.vmarkdown.on('firstVisibleLineChange', function (firstVisibleLine) {
+        //     self.scrollToLine(firstVisibleLine);
+        // });
+        //
+        // self.vmarkdown.on('cursorChange', function (cursor) {
+        //     self.activeTo(cursor);
+        // });
     }
 
-    on(type, handler) {
-
-    }
+    // on(type, handler) {
+    //
+    // }
 
     scrollTo() {
 
@@ -78,7 +90,10 @@ export default class VMarkDownPreview extends Preview {
         if(!dom) return;
 
         // dom.scrollIntoView();
-        self._scrollTo(dom);
+        self._scrollTo(dom, {
+            axis: 'y',
+            duration: 300
+        });
     }
 
     activeTo(position) {
@@ -107,7 +122,7 @@ export default class VMarkDownPreview extends Preview {
     }
 
 
-    activeToLine(line) {
+    __activeToLine(line) {
         const self = this;
 
         const node = self.vmarkdown.findNodeByLine(line);
