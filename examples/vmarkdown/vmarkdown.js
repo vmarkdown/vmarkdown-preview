@@ -1,5 +1,6 @@
 const NodeUtil = require("./util/node");
 const vremark = require('vremark');
+const Event = require('./util/event');
 export default class VMarkDown {
 
     constructor() {
@@ -10,6 +11,7 @@ export default class VMarkDown {
 
     setValue(value) {
         this.value = value;
+        this.emit('change', value);
     }
 
     compile(h) {
@@ -56,3 +58,5 @@ export default class VMarkDown {
         return node;
     }
 }
+
+Event.mixin(VMarkDown);

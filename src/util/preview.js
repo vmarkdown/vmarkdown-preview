@@ -4,14 +4,6 @@ export default class Preview {
 
     }
 
-    getValue() {
-
-    }
-
-    setValue() {
-
-    }
-
     scrollTo() {
 
     }
@@ -20,4 +12,7 @@ export default class Preview {
 
     }
 
+    activeTo(position) {
+
+    }
 }

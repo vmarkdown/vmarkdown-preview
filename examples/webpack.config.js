@@ -10,6 +10,7 @@ module.exports = {
     // mode: 'none',
     mode: 'development',
     entry: {
+        // 'vmarkdown': path.resolve(__dirname, 'vmarkdown/index.js'),
         'example-editor': path.resolve(__dirname, 'editor/editor.js'),
         'example-preview': path.resolve(__dirname, 'preview/preview.js')
     },
@@ -19,7 +20,7 @@ module.exports = {
     },
     resolve: {
         alias: {
-
+            'vmarkdown': path.resolve(__dirname, 'vmarkdown/vmarkdown.js'),
         }
     },
     module: {

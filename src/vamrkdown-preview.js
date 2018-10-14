@@ -12,17 +12,21 @@ function scrollTo(target, options) {
 
 export default class VMarkDownPreview extends Preview {
 
-    constructor(el, vmarkdown) {
+    constructor(options) {
         super();
         const self = this;
 
         // self.container = document.getElementById(el);
-        self.vmarkdown = vmarkdown;
+        self.vmarkdown = options.vmarkdown;
         self.preview = new Vue({
-            el: el,
+            el: options.container,
             render(h) {
-                return vmarkdown.compile(h);
+                return self.vmarkdown.compile(h);
             }
+        });
+
+        self.vmarkdown.on('change', function () {
+            self.preview.$forceUpdate();
         });
     }
 
@@ -30,15 +34,15 @@ export default class VMarkDownPreview extends Preview {
 
     }
 
-    getValue() {
-
-    }
-
-    setValue(md) {
-        const self = this;
-        self.vmarkdown.setValue(md);
-        self.preview.$forceUpdate();
-    }
+    // getValue() {
+    //
+    // }
+    //
+    // setValue(md) {
+    //     const self = this;
+    //     self.vmarkdown.setValue(md);
+    //     self.preview.$forceUpdate();
+    // }
 
     scrollTo() {
 
@@ -87,11 +91,11 @@ export default class VMarkDownPreview extends Preview {
         $(self.preview.$el).find('.active-line').removeClass('active-line');
         $(dom).addClass('active-line');
 
-        scrollTo(dom, {
-            over: 0.5,
-            offset: -1 * ($(window).height() / 2)
-        });
-
+        dom.scrollIntoViewIfNeeded();
+        // scrollTo(dom, {
+        //     over: 0.5,
+        //     offset: -1 * ($(window).height() / 2)
+        // });
     }
 
 
