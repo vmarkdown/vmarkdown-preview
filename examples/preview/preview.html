@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Preview</title>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css">
+    <style>
+        #preview {
+            margin: 40px auto;
+            width: 400px;
+        }
+
+        #preview .active {
+            /*background-color: rgba(255, 0, 179, 0.25);*/
+            background-color: #d7d4f0!important;
+        }
+
+        html, body{
+            padding: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        .markdown-body{
+            margin: 40px auto;
+            width: 600px;
+        }
+
+        .active-line {
+            background-color: #e8f2ff!important;
+        }
+
+    </style>
+
+
+
+    <script src="//cdn.bootcss.com/vue/2.5.16/vue.js"></script>
+
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.js"></script>
+
+
+
+
+
+
+    <!-- katex -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0-alpha/katex.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0-alpha/katex.min.js"></script>
+
+    <!-- lowlight -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+    <script src="lowlight.js"></script>
+
+
+
+    <script src="vremark.js"></script>
+
+</head>
+<body>
+<div id="preview"></div>
+<script src="example-preview.js"></script>
+</body>
+</html>

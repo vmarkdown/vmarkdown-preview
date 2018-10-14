@@ -1,0 +1,43 @@
+{
+  "name": "vmarkdown-preview",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "dist": "webpack -p -c webpack.config.js",
+    "build": "webpack --config ./webpack.config.js",
+    "dev": "webpack-dev-server --config ./examples/webpack.config.js",
+    "test": "mocha test/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vmarkdown/vmarkdown-preview.git"
+  },
+  "keywords": [],
+  "main": "src/index.js",
+  "files": [
+    "src",
+    "dist/*.js"
+  ],
+  "author": "yucopowo@gmail.com",
+  "license": "MIT",
+  "homepage": "https://github.com/vmarkdown/vmarkdown-preview#readme",
+  "devDependencies": {
+    "css-loader": "^1.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.4.4",
+    "node-sass": "^4.9.3",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.0",
+    "text-loader": "^0.0.1",
+    "unified": "^7.0.0",
+    "unist-find-node": "^1.1.2",
+    "webpack": "^4.17.2",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.9"
+  },
+  "dependencies": {
+    "remark-html": "^8.0.0",
+    "remark-math": "^1.0.4",
+    "remark-parse": "^5.0.0"
+  }
+}
