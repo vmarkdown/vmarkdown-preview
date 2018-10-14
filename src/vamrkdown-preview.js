@@ -1,3 +1,5 @@
+require('./vamrkdown-preview.scss');
+
 import Preview from './util/preview';
 
 $.extend($.scrollTo.defaults, {
@@ -10,13 +12,14 @@ function scrollTo(target, options) {
     $(window).scrollTo(target, options);
 }
 
+const ACTIVE_CLASS = 'vamrkdown-preview-active';
+
 export default class VMarkDownPreview extends Preview {
 
     constructor(options) {
         super();
         const self = this;
 
-        // self.container = document.getElementById(el);
         self.vmarkdown = options.vmarkdown;
         self.preview = new Vue({
             el: options.container,
@@ -33,16 +36,6 @@ export default class VMarkDownPreview extends Preview {
     on(type, handler) {
 
     }
-
-    // getValue() {
-    //
-    // }
-    //
-    // setValue(md) {
-    //     const self = this;
-    //     self.vmarkdown.setValue(md);
-    //     self.preview.$forceUpdate();
-    // }
 
     scrollTo() {
 
@@ -88,8 +81,8 @@ export default class VMarkDownPreview extends Preview {
 
         if(!dom) return;
 
-        $(self.preview.$el).find('.active-line').removeClass('active-line');
-        $(dom).addClass('active-line');
+        $(self.preview.$el).find('.active-line').removeClass(ACTIVE_CLASS);
+        $(dom).addClass(ACTIVE_CLASS);
 
         dom.scrollIntoViewIfNeeded();
         // scrollTo(dom, {
@@ -114,8 +107,8 @@ export default class VMarkDownPreview extends Preview {
 
         if(!dom) return;
 
-        $(self.preview.$el).find('.active-line').removeClass('active-line');
-        $(dom).addClass('active-line');
+        $(self.preview.$el).find('.active-line').removeClass(ACTIVE_CLASS);
+        $(dom).addClass(ACTIVE_CLASS);
 
         scrollTo(dom, {
             // over: 3,
