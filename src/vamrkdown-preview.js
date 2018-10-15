@@ -26,20 +26,30 @@ export default class VMarkDownPreview extends Preview {
         self.$scrollContainer.scrollTo(target, options);
     }
 
-    scrollTo(target) {
+    scrollTo(node) {
+        if(!node) return;
+
         const self = this;
+        const id = node.properties.id;
+        // preview.scrollTo('#'+id);
+        const target = '#'+id;
         self._scrollTo(target, {
             axis: 'y',
             duration: 300
         });
     }
 
-    activeTo(target) {
+    activeTo(node) {
+        if(!node) return;
+
         const self = this;
 
         if(self.activeEl) {
             self.activeEl.removeClass(ACTIVE_CLASS);
         }
+
+        const id = node.properties.id;
+        const target = '#'+id;
 
         var $dom = $(target);
         $dom.addClass(ACTIVE_CLASS);
