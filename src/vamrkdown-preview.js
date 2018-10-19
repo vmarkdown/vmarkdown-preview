@@ -2,6 +2,19 @@ require('./vamrkdown-preview.scss');
 import Preview from './base/preview';
 const ACTIVE_CLASS = 'vamrkdown-preview-active';
 
+function getDisplay(obj){
+    if (obj.currentStyle) {
+        return obj.currentStyle.display;
+    }
+    else {
+        return getComputedStyle(obj, false).display;
+    }
+}
+
+function isBlock(obj) {
+    return getDisplay(obj) === 'block';
+}
+
 export default class VMarkDownPreview extends Preview {
 
     constructor(options) {
@@ -61,7 +74,13 @@ export default class VMarkDownPreview extends Preview {
 
         var dom = $dom[0];
 
-        dom.scrollIntoViewIfNeeded();
+        if(!isBlock(dom)) {
+            dom = dom.parentElement;
+        }
+
+        // dom.scrollIntoViewIfNeeded(); //scrollIntoView
+        dom.scrollIntoViewIfNeeded({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+
     }
 
 }
