@@ -88,11 +88,15 @@ export default class VMarkDownPreview extends Preview {
         // dom.scrollIntoViewIfNeeded({ behavior: 'smooth', block: 'nearest', inline: 'start' });
         // console.log(cursor);
 
-        var options = {
-            offset: {
-                top: -1 * cursor.top
-            }
-        };
+        var options = {};
+
+        if(cursor) {
+            Object.assign(options, {
+                offset: {
+                    top: -1 * cursor.top
+                }
+            })
+        }
 
         // self._scrollTo(target, {
         //     axis: 'y',
@@ -102,7 +106,7 @@ export default class VMarkDownPreview extends Preview {
         //     }
         // });
 
-        self._scrollTo(target, cursor?options:{});
+        self._scrollTo(target, options);
 
 
     }
