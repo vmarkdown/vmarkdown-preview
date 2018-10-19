@@ -26,7 +26,7 @@ vmarkdown.on('firstVisibleLineChange', function (firstVisibleLine) {
 
 vmarkdown.on('cursorChange', function (cursor) {
     const node = vmarkdown.findNode(cursor);
-    preview.activeTo(node);
+    preview.activeTo(node, cursor);
 });
 
 vmarkdown.setValue(md);

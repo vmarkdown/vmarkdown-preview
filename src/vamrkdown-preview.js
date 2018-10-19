@@ -22,6 +22,11 @@ export default class VMarkDownPreview extends Preview {
         const self = this;
         self.$scrollContainer = $(options.scrollContainer || window);
         self.activeEl = null;
+
+        $.scrollTo && $.extend($.scrollTo.defaults, {
+            axis: 'y',
+            duration: 300
+        });
     }
 
     // on(type, handler) {
@@ -46,13 +51,15 @@ export default class VMarkDownPreview extends Preview {
         const id = node.properties.id;
         // preview.scrollTo('#'+id);
         const target = '#'+id;
-        self._scrollTo(target, {
-            axis: 'y',
-            duration: 300
-        });
+        // self._scrollTo(target, {
+        //     axis: 'y',
+        //     duration: 300
+        // });
+        self._scrollTo(target);
     }
 
-    activeTo(node) {
+    // at grade
+    activeTo(node, cursor) {
         if(!node) return;
 
         const self = this;
@@ -72,14 +79,31 @@ export default class VMarkDownPreview extends Preview {
             return;
         }
 
-        var dom = $dom[0];
-
-        if(!isBlock(dom)) {
-            dom = dom.parentElement;
-        }
-
+        // var dom = $dom[0];
+        //
+        // if(!isBlock(dom)) {
+        //     dom = dom.parentElement;
+        // }
         // dom.scrollIntoViewIfNeeded(); //scrollIntoView
-        dom.scrollIntoViewIfNeeded({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        // dom.scrollIntoViewIfNeeded({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        // console.log(cursor);
+
+        var options = {
+            offset: {
+                top: -1 * cursor.top
+            }
+        };
+
+        // self._scrollTo(target, {
+        //     axis: 'y',
+        //     duration: 300,
+        //     offset: {
+        //         top: -1 * cursor.top
+        //     }
+        // });
+
+        self._scrollTo(target, cursor?options:{});
+
 
     }
 
