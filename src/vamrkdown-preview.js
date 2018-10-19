@@ -60,13 +60,13 @@ export default class VMarkDownPreview extends Preview {
 
     // at grade
     activeTo(node, cursor) {
-        if(!node) return;
-
         const self = this;
 
         if(self.activeEl) {
             self.activeEl.removeClass(ACTIVE_CLASS);
         }
+
+        if(!node) return;
 
         const id = node.properties.id;
         const target = '#'+id;
