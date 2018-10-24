@@ -33,6 +33,13 @@ export default class VMarkDownPreview extends Preview {
     //
     // }
 
+    _getId(node) {
+        if(node.data && node.data.attrs) {
+            if( node.data.attrs.id === 0 ) return '0';
+            return node.data.attrs.id;
+        }
+        return null;
+    }
 
     setValue() {
 
@@ -48,7 +55,10 @@ export default class VMarkDownPreview extends Preview {
         if(!node) return;
 
         const self = this;
-        const id = node.properties.id;
+        const id = self._getId(node);
+        if(!id) return;
+
+        // const id = node.properties.id;
         // preview.scrollTo('#'+id);
         const target = '#'+id;
         // self._scrollTo(target, {
@@ -68,7 +78,9 @@ export default class VMarkDownPreview extends Preview {
 
         if(!node) return;
 
-        const id = node.properties.id;
+        const id = self._getId(node);
+        if(!id) return;
+        // const id = node.properties.id;
         const target = '#'+id;
 
         var $dom = $(target);
