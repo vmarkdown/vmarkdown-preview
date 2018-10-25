@@ -1,52 +1,106 @@
-const md = require('../md/demo.md');
+const VMarkDown = require('../www/vmarkdown.30476d468b942c0bdb31.min');
+const vmarkdown = new VMarkDown({
+    pluginManager: {
+        load: function (plugins) {
 
-// import VMarkDown from 'vmarkdown';
-const vmarkdown = new VMarkDown();
+            Object.keys(plugins).forEach(function (name) {
+
+                Vue.component(name, {
+                    name: name,
+                    props: {
+                        'lang': {
+                            type: String,
+                            default: ''
+                        },
+                        'code': {
+                            type: String,
+                            required: true
+                        }
+                    },
+                    data() {
+                        return {
+                            result: this.code || ''
+                        }
+                    },
+                    render(h) {
+                        return h('pre', {
+                            'class': [name]
+                        }, [
+                            h('code', {
+                                'class': [],
+                                domProps:{
+                                    innerHTML: this.result
+                                }
+                            })
+                        ]);
+                    }
+                });
+
+            });
+
+
+
+
+        }
+    }
+});
 
 import Preview from '../../src/vamrkdown-preview';
 const preview = new Preview({
     scrollContainer: window //'#preview'
 });
 
+function scrollTo(firstVisibleLine) {
+    const node = vmarkdown.findNodeFromLine(firstVisibleLine);
+    preview.scrollTo(node, firstVisibleLine);
+}
+
+function activeTo(cursor) {
+    const node = vmarkdown.findNode(cursor);
+    preview.activeTo(node, cursor);
+}
+
 const app = new Vue({
     el: '#preview',
+    data: {
+        vdom: null
+    },
+    methods: {
+        async setValue(md) {
+            const h = this.$createElement;
+            const vdom = await vmarkdown.render(md, {h: h});
+            this.vdom = vdom;
+        },
+
+    },
     render(h) {
-        return vmarkdown.compile(h);
+        return this.vdom;
     }
 });
 
-vmarkdown.on('change', function (value) {
-    app.$forceUpdate();
-});
+const md = localStorage.getItem('change');
 
-vmarkdown.on('firstVisibleLineChange', function (firstVisibleLine) {
-    const node = vmarkdown.findNodeFromLine(firstVisibleLine);
-    preview.scrollTo(node);
-});
-
-vmarkdown.on('cursorChange', function (cursor) {
-    const node = vmarkdown.findNode(cursor);
-    preview.activeTo(node, cursor);
-});
-
-vmarkdown.setValue(md);
+app.setValue(md);
 
 window.addEventListener("storage", function(event){
     const key = event.key;
     const value = event.newValue;
     switch (key) {
         case 'change':{
-            vmarkdown.setValue(value);
+            // vmarkdown.setValue(value);
+            app.setValue(value);
             break;
         }
         case 'cursorChange':{
             let cursor = JSON.parse(value);
-            vmarkdown.emit('cursorChange', cursor);
+            // vmarkdown.emit('cursorChange', cursor);
+            activeTo(cursor);
             break;
         }
         case 'firstVisibleLineChange':{
             let firstVisibleLine = parseInt(value, 10);
-            vmarkdown.emit('firstVisibleLineChange', firstVisibleLine);
+            // vmarkdown.emit('firstVisibleLineChange', firstVisibleLine);
+            scrollTo(firstVisibleLine);
             break;
         }
     }

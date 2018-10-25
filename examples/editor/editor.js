@@ -36,5 +36,6 @@ const md = require('../md/demo.md');
 
     editor.on('change', _.debounce(onChange, 500));
 
+    // window.open('/preview.html')
 
 })();
