@@ -8,47 +8,53 @@
 // }, 3000);
 
 const $ = require('jquery');
+const themes = require('./themes.js');
 
-const themes = {
-    GitHub: require('../theme/GitHub.theme.css'),
-    GitHub2: require('../theme/GitHub2.theme.css'),
-    concise: require('../theme/concise.theme.css'),
-    kevinburke: require('../theme/kevinburke.theme.css'),
-    Clearness: require('../theme/Clearness.theme.css'),
-    ClearnessDark: require('../theme/Clearness Dark.theme.css'),
-    SolarizedDark: require('../theme/Solarized (Dark).theme.css'),
-    SolarizedLight: require('../theme/Solarized (Light).theme.css'),
-    marxico: require('../theme/marxico.theme.css')
-};
+// const themes = {
+//     GitHub: require('../theme/GitHub.theme.css'),
+//     GitHub2: require('../theme/GitHub2.theme.css'),
+//     concise: require('../theme/concise.theme.css'),
+//     kevinburke: require('../theme/kevinburke.theme.css'),
+//     Clearness: require('../theme/Clearness.theme.css'),
+//     ClearnessDark: require('../theme/Clearness Dark.theme.css'),
+//     SolarizedDark: require('../theme/Solarized (Dark).theme.css'),
+//     SolarizedLight: require('../theme/Solarized (Light).theme.css'),
+//     marxico: require('../theme/marxico.theme.css'),
+//     wysiwyg: require('../theme/wysiwyg.theme.css')
+//
+// };
 
-themes.GitHub.use();
+// themes.GitHub.use();
 
 const theme = new Vue({
     el: '#theme',
     data: function () {
-        const _themes = [];
-        Object.keys(themes).forEach(function (name) {
-            _themes.push({
-                name: name,
-                theme: themes[name]
-            });
-        });
+        // const _themes = [];
+        // Object.keys(themes).forEach(function (name) {
+        //     _themes.push({
+        //         name: name,
+        //         theme: themes[name]
+        //     });
+        // });
         return {
-            theme: 'GitHub',
-            themes: _themes
+            theme: null,
+            // theme: themes[0],
+            themes: themes
         };
     },
     watch: {
-        theme(newVal, oldVal) {
-            const oldTheme = themes[oldVal];
-            oldTheme.unuse();
+        theme(newTheme, oldTheme) {
+            if(oldTheme){
+                oldTheme.style.unuse();
+                oldTheme.rootClassName && $('#preview').removeClass(oldTheme.rootClassName);
+            }
 
-            const newTheme = themes[newVal];
-            newTheme.use();
+            newTheme.style.use();
+            newTheme.rootClassName && $('#preview').addClass(newTheme.rootClassName);
         }
     },
     mounted() {
-
+        this.theme = themes[0];
     }
 });
 
@@ -78,12 +84,47 @@ const preview = new Preview({
     scrollContainer: window //'#preview'
 });
 
+const pluginManager = new VMarkDown.PluginManager({
+    loader: function (plugin) {
+
+        return new Promise(function (success, fail) {
+
+            Vue.component(plugin, function (resolve, reject) {
+                requirejs([plugin], function(component){
+                    resolve(component);
+                    success();
+                }, function (e) {
+                    // reject();
+                    resolve({
+                        render(h) {
+                            return h('pre', {}, [
+                                h('code', {}, e.message)
+                            ])
+                        }
+                    });
+                    console.error(e);
+                    fail();
+                });
+            });
+
+        });
+
+    }
+});
+
 const app = new Vue({
-    el: '#preview',
+    el: '#app',
     data: {
         vdom: null
     },
     methods: {
+        refresh() {
+            const self = this;
+            console.time('refresh');
+            const vdom = self.vmarkdown.refresh();
+            console.timeEnd('refresh');
+            self.vdom = vdom;
+        },
         async setValue(md) {
             const vdom = await this.vmarkdown.process(md);
             this.vdom = vdom;
@@ -106,51 +147,14 @@ const app = new Vue({
         const h = this.$createElement;
         const vmarkdown = new VMarkDown({
             h: h,
-            pluginManager: {
-                load: function (plugins) {
-
-                    Object.keys(plugins).forEach(function (name) {
-
-                        Vue.component(name, {
-                            name: name,
-                            props: {
-                                'lang': {
-                                    type: String,
-                                    default: ''
-                                },
-                                'code': {
-                                    type: String,
-                                    required: true
-                                }
-                            },
-                            data() {
-                                return {
-                                    result: this.code || ''
-                                }
-                            },
-                            render(h) {
-                                return h('pre', {
-                                    'class': [name]
-                                }, [
-                                    h('code', {
-                                        'class': [],
-                                        domProps:{
-                                            innerHTML: this.result
-                                        }
-                                    })
-                                ]);
-                            }
-                        });
-
-                    });
-
-
-
-
-                }
-            },
+            pluginManager: pluginManager,
             rootClassName: 'markdown-body'
         });
+
+        vmarkdown.$on('refresh', function (hast) {
+            self.refresh(hast);
+        });
+
         self.vmarkdown = vmarkdown;
 
 

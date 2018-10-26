@@ -14,15 +14,32 @@
             height: 100%;
         }
 
+        /*#preview {*/
+            /*!*margin: 40px auto;*!*/
+            /*!*width: 400px;*!*/
+            /*margin: 40px auto;*/
+            /*width: 600px;*/
+        /*}*/
+
         #preview {
-            margin: 40px auto;
-            width: 400px;
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 45px;
         }
 
-        .markdown-body{
-            margin: 40px auto;
-            width: 600px;
+        @media (max-width: 767px) {
+            #preview {
+                padding: 15px;
+            }
         }
+
+
+        /*.markdown-body{*/
+            /*margin: 40px auto;*/
+            /*width: 600px;*/
+        /*}*/
 
         .theme-container{
             position: fixed;
@@ -41,7 +58,7 @@
             try {
                 requirejs.config({
                     paths: {"vremark-plugin-math":"vremark/vremark-plugin-math","vremark-plugin-sequence":"vremark/vremark-plugin-sequence","vremark-plugin-mermaid":"vremark/vremark-plugin-mermaid","vremark-plugin-highlight":"vremark/vremark-plugin-highlight","vremark-plugin-g2":"vremark/vremark-plugin-g2","vremark-plugin-chart":"vremark/vremark-plugin-chart","vremark-plugin-flowchart":"vremark/vremark-plugin-flowchart"}
-            });
+                });
             }
             catch (e) {
 
@@ -54,11 +71,12 @@
 
 <div id="theme" class="theme-container">
     <select v-model="theme">
-        <option v-for="theme in themes" :value="theme.name">{{theme.name}}</option>
+        <option v-for="theme in themes" :value="theme">{{theme.name}}</option>
     </select>
 </div>
 <div id="preview">
-    <div class="markdown-body"></div>
+    <div id="app"></div>
+    <!--<div class="markdown-body"></div>-->
 </div>
 <script src="example-preview.js"></script>
 </body>
