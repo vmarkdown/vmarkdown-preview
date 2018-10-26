@@ -70,8 +70,7 @@ const app = new Vue({
             const h = this.$createElement;
             const vdom = await vmarkdown.render(md, {h: h});
             this.vdom = vdom;
-        },
-
+        }
     },
     render(h) {
         return this.vdom;
