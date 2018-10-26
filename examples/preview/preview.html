@@ -6,17 +6,7 @@
 
     <title>Preview</title>
 
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css">
     <style>
-        #preview {
-            margin: 40px auto;
-            width: 400px;
-        }
-
-        #preview .active {
-            /*background-color: rgba(255, 0, 179, 0.25);*/
-            background-color: #d7d4f0!important;
-        }
 
         html, body{
             padding: 0;
@@ -24,44 +14,51 @@
             height: 100%;
         }
 
+        #preview {
+            margin: 40px auto;
+            width: 400px;
+        }
+
         .markdown-body{
             margin: 40px auto;
             width: 600px;
         }
 
+        .theme-container{
+            position: fixed;
+            top: 10px;
+            right: 10px;
+        }
+
     </style>
-
-
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.17-beta.0/vue.js"></script>
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.js"></script>
+    <script>
+        (function () {
+            try {
+                requirejs.config({
+                    paths: {"vremark-plugin-math":"vremark/vremark-plugin-math","vremark-plugin-sequence":"vremark/vremark-plugin-sequence","vremark-plugin-mermaid":"vremark/vremark-plugin-mermaid","vremark-plugin-highlight":"vremark/vremark-plugin-highlight","vremark-plugin-g2":"vremark/vremark-plugin-g2","vremark-plugin-chart":"vremark/vremark-plugin-chart","vremark-plugin-flowchart":"vremark/vremark-plugin-flowchart"}
+            });
+            }
+            catch (e) {
 
-    <!-- katex -->
-    <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0-alpha/katex.min.css">-->
-    <!--<script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0-alpha/katex.min.js"></script>-->
-
-    <!-- lowlight -->
-    <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">-->
-    <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">-->
-    <!--<script src="lowlight.js"></script>-->
-
-
-
-    <!--<script src="vmarkdown.js"></script>-->
-    <!--<script src="vmarkdovmarkdown.30476d468b942c0bdb31.min.js"></script>-->
+            }
+        })();
+    </script>
 
 </head>
 <body>
+
+<div id="theme" class="theme-container">
+    <select v-model="theme">
+        <option v-for="theme in themes" :value="theme.name">{{theme.name}}</option>
+    </select>
+</div>
 <div id="preview">
-    <div class="markdown-body">
-        <h1>h1</h1>
-        <h2>h2</h2>
-        <h3>h3</h3>
-    </div>
+    <div class="markdown-body"></div>
 </div>
 <script src="example-preview.js"></script>
 </body>

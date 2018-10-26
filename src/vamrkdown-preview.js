@@ -1,6 +1,9 @@
 require('./vamrkdown-preview.scss');
 import Preview from './base/preview';
-const ACTIVE_CLASS = 'vamrkdown-preview-active';
+const $ = require('jquery');
+require('jquery.scrollto');
+
+const ACTIVE_CLASS = 'vmarkdown-preview-active';
 
 export default class VMarkDownPreview extends Preview {
 
@@ -15,10 +18,6 @@ export default class VMarkDownPreview extends Preview {
             duration: 300
         });
     }
-
-    // on(type, handler) {
-    //
-    // }
 
     _getId(node) {
         if(node.data && node.data.attrs) {
@@ -77,7 +76,6 @@ export default class VMarkDownPreview extends Preview {
 
         const id = self._getId(node);
         if(!id) return;
-        // const id = node.properties.id;
         const target = '#'+id;
 
         var $dom = $(target);
@@ -88,15 +86,6 @@ export default class VMarkDownPreview extends Preview {
             return;
         }
 
-        // var dom = $dom[0];
-        //
-        // if(!isBlock(dom)) {
-        //     dom = dom.parentElement;
-        // }
-        // dom.scrollIntoViewIfNeeded(); //scrollIntoView
-        // dom.scrollIntoViewIfNeeded({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-        // console.log(cursor);
-
         var options = {};
 
         if(cursor) {
@@ -106,14 +95,6 @@ export default class VMarkDownPreview extends Preview {
                 }
             })
         }
-
-        // self._scrollTo(target, {
-        //     axis: 'y',
-        //     duration: 300,
-        //     offset: {
-        //         top: -1 * cursor.top
-        //     }
-        // });
 
         self._scrollTo(target, options);
 

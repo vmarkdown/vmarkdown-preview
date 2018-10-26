@@ -9,6 +9,7 @@ function getFile(filepath) {
 module.exports = {
     // mode: 'none',
     mode: 'development',
+    target: 'web',
     entry: {
         // 'vmarkdown': path.resolve(__dirname, 'vmarkdown/index.js'),
         'example-editor': path.resolve(__dirname, 'editor/editor.js'),
@@ -20,7 +21,7 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'vmarkdown': path.resolve(__dirname, 'vmarkdown/vmarkdown.js'),
+            'vmarkdown': path.resolve(__dirname, 'www', 'vmarkdown.js'),
         }
     },
     module: {
@@ -28,6 +29,29 @@ module.exports = {
             {
                 test: /\.md$/,
                 use: 'text-loader'
+            },
+            // {
+            //     test: /\.css$/,
+            //     use: [
+            //         { loader: "style-loader" },
+            //         { loader: "css-loader" }
+            //     ]
+            // },
+            {
+                test: /\.theme\.css$/,
+                use: [
+                    {
+                        loader: 'style-loader/useable',
+                    },
+                    {
+                        loader: 'css-loader',
+                        // options: {
+                        //     modules: true,
+                        //     // localIdentName: '[name].[local]_[hash:7]',
+                        //     sourceMap: false,
+                        // },
+                    }
+                ]
             },
             {
                 test: /\.scss$/,
@@ -40,7 +64,6 @@ module.exports = {
         ]
     },
     externals: {
-        'vremark': 'vremark'
     },
     plugins: [
         // new HtmlWebpackPlugin({

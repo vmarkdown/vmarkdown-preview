@@ -1,4 +1,5 @@
 const md = require('../md/demo.md');
+const _ = require('lodash');
 
 (async function () {
 
