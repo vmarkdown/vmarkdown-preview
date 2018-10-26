@@ -56,12 +56,25 @@ cond(yes)->e
 cond(no)->op
 ```
 
-以及时序图:
+```g2
+const data = [
+    { genre: 'Sports', sold: 275 },
+    { genre: 'Strategy', sold: 115 },
+    { genre: 'Action', sold: 120 },
+    { genre: 'Shooter', sold: 350 },
+    { genre: 'Other', sold: 150 }
+];
 
-```sequence
-Alice->Bob: Hello Bob, how are you?
-Note right of Bob: Bob thinks
-Bob-->Alice: I am good thanks!
+const chart = new G2.Chart({
+    forceFit: true,
+    container: container,
+    height : 300
+});
+chart.source(data);
+chart.interval().position('genre*sold').color('genre')
+chart.render();
+
+return chart;
 ```
 
 > **提示：**想了解更多，请查看**流程图**[语法][3]以及**时序图**[语法][4]。

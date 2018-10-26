@@ -83,6 +83,7 @@ module.exports = {
         })
     ],
     devServer: {
+        host: '0.0.0.0',
         hot: false,
         inline: false,
         contentBase: path.join(__dirname, "www"),
