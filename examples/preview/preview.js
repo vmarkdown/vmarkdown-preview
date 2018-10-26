@@ -75,31 +75,34 @@ const app = new Vue({
     },
     render(h) {
         return this.vdom;
+    },
+    mounted() {
+        const self = this;
+        const md = localStorage.getItem('change');
+        self.setValue(md);
     }
 });
-
-const md = localStorage.getItem('change');
-
-app.setValue(md);
 
 window.addEventListener("storage", function(event){
     const key = event.key;
     const value = event.newValue;
     switch (key) {
+        case 'refresh':{
+            const md = localStorage.getItem('change');
+            app.setValue(md);
+            break;
+        }
         case 'change':{
-            // vmarkdown.setValue(value);
             app.setValue(value);
             break;
         }
         case 'cursorChange':{
             let cursor = JSON.parse(value);
-            // vmarkdown.emit('cursorChange', cursor);
             activeTo(cursor);
             break;
         }
         case 'firstVisibleLineChange':{
             let firstVisibleLine = parseInt(value, 10);
-            // vmarkdown.emit('firstVisibleLineChange', firstVisibleLine);
             scrollTo(firstVisibleLine);
             break;
         }

@@ -2,19 +2,6 @@ require('./vamrkdown-preview.scss');
 import Preview from './base/preview';
 const ACTIVE_CLASS = 'vamrkdown-preview-active';
 
-function getDisplay(obj){
-    if (obj.currentStyle) {
-        return obj.currentStyle.display;
-    }
-    else {
-        return getComputedStyle(obj, false).display;
-    }
-}
-
-function isBlock(obj) {
-    return getDisplay(obj) === 'block';
-}
-
 export default class VMarkDownPreview extends Preview {
 
     constructor(options) {
@@ -51,21 +38,31 @@ export default class VMarkDownPreview extends Preview {
         self.$scrollContainer.scrollTo(target, options);
     }
 
-    scrollTo(node) {
+    scrollTo(node, firstVisibleLine) {
         if(!node) return;
 
         const self = this;
         const id = self._getId(node);
         if(!id) return;
 
-        // const id = node.properties.id;
-        // preview.scrollTo('#'+id);
         const target = '#'+id;
-        // self._scrollTo(target, {
-        //     axis: 'y',
-        //     duration: 300
-        // });
-        self._scrollTo(target);
+        const options = {};
+
+        if(node) {
+
+            const position = node.position;
+            const startLine = position.start.line;
+            const endLine = position.end.line;
+            const currentLine = firstVisibleLine<startLine?startLine:firstVisibleLine;
+            const allLine = endLine - startLine + 1;
+            const coverageRatio = (currentLine-startLine)/allLine;
+
+            options.over = {
+                top: coverageRatio
+            }
+        }
+
+        self._scrollTo(target, options);
     }
 
     // at grade

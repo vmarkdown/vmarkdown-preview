@@ -3,21 +3,18 @@ const md = require('../md/demo.md');
 (async function () {
 
     // const mdast = processor.parse(md);
-    localStorage.setItem("markdown", md);
-
+    // localStorage.setItem("markdown", md);
 
     const editor = new CodeMirrorEditor(document.getElementById('editor'), {
-        value: md,
+        // value: md,
         lineNumbers: true,
         // firstLineNumber: 0
     });
 
 
     editor.on('cursorChange', function (cursor) {
-
         console.log(cursor);
         localStorage.setItem("cursorChange", JSON.stringify(cursor));
-
     });
 
     function onScroll() {
@@ -25,10 +22,10 @@ const md = require('../md/demo.md');
         // localStorage.setItem("cursor", JSON.stringify(cursor));
         // localStorage.setItem("markdown", editor.getValue());
         localStorage.setItem("firstVisibleLineChange", editor.getFirstVisibleLine());
-
     }
 
-    editor.on('scroll', _.throttle(onScroll, 300));
+    editor.on('scroll', onScroll);
+    // editor.on('scroll', _.throttle(onScroll, 300));
 
     function onChange() {
         localStorage.setItem("change", editor.getValue());
@@ -37,5 +34,9 @@ const md = require('../md/demo.md');
     editor.on('change', _.debounce(onChange, 500));
 
     // window.open('/preview.html')
+
+    editor.setValue(md);
+
+    localStorage.setItem("refresh", true);
 
 })();
