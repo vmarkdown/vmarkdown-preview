@@ -45,11 +45,11 @@ const theme = new Vue({
     watch: {
         theme(newTheme, oldTheme) {
             if(oldTheme){
-                oldTheme.style.unuse();
+                oldTheme.css.unuse();
                 oldTheme.rootClassName && $('#preview').removeClass(oldTheme.rootClassName);
             }
 
-            newTheme.style.use();
+            newTheme.css.use();
             newTheme.rootClassName && $('#preview').addClass(newTheme.rootClassName);
         }
     },
@@ -158,7 +158,7 @@ const app = new Vue({
         self.vmarkdown = vmarkdown;
 
 
-        const md = localStorage.getItem('change');
+        const md = localStorage.getItem('change') || require('../md/test.md');
         self.setValue(md);
     }
 });

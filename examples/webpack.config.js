@@ -83,6 +83,7 @@ module.exports = {
         })
     ],
     devServer: {
+        // open: 'http://127.0.0.1:8080/preview.html',
         host: '0.0.0.0',
         hot: false,
         inline: false,
