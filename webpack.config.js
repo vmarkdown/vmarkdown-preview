@@ -1,5 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const production = (process.env.NODE_ENV === 'production');
+
 
 module.exports = {
     mode: 'none',
@@ -9,7 +11,8 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].js',
+        // filename: '[name].js',
+        filename: production?'[name].[hash].min.js':'[name].js',
         libraryTarget: "umd",
         libraryExport: 'default',
         library: "VMarkDownPreview"
@@ -35,12 +38,26 @@ module.exports = {
         ]
     },
     externals: {
-        'vremark': 'vremark'
+        // 'vremark': 'vremark'
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: '[name].css'
+            // filename: '[name].css'
+            filename: production?'[name].[hash].min.css':'[name].css'
         })
-    ]
+    ],
+    optimization: {
+        // runtimeChunk: 'single',
+        splitChunks: {
+            cacheGroups: {
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vmarkdown-preview-vendors',
+                    enforce: true,
+                    chunks: 'all'
+                }
+            }
+        }
+    }
 };
 
