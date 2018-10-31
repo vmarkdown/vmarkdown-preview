@@ -1,4 +1,4 @@
-require('./vamrkdown-preview.scss');
+require('./vmarkdown-preview.scss');
 import Preview from './base/preview';
 const $ = require('jquery');
 require('jquery.scrollto');
@@ -96,9 +96,14 @@ export default class VMarkDownPreview extends Preview {
             })
         }
 
-
         const position = node.position;
-        if(node.tagName === 'code' && position && position.start.line < position.end.line) {
+        if(
+            (
+                node.tagName === 'code' ||
+                (node.data && node.data.props && node.data.props.code)
+            )
+
+            && position && position.start.line < position.end.line) {
             const firstVisibleLine = cursor.line;
             const startLine = position.start.line;
             const endLine = position.end.line;

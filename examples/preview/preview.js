@@ -27,7 +27,7 @@ const theme = new Vue({
 
 const VMarkDown = require('vmarkdown');
 
-import Preview from '../../src/vamrkdown-preview';
+import Preview from '../../src/vmarkdown-preview';
 const preview = new Preview({
     scrollContainer: window //'#preview'
 });
