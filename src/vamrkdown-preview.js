@@ -86,7 +86,7 @@ export default class VMarkDownPreview extends Preview {
             return;
         }
 
-        var options = {};
+        const options = {};
 
         if(cursor) {
             Object.assign(options, {
@@ -96,9 +96,24 @@ export default class VMarkDownPreview extends Preview {
             })
         }
 
+
+        const position = node.position;
+        if(node.tagName === 'code' && position && position.start.line < position.end.line) {
+            const firstVisibleLine = cursor.line;
+            const startLine = position.start.line;
+            const endLine = position.end.line;
+            const currentLine = firstVisibleLine<startLine?startLine:firstVisibleLine;
+            const allLine = endLine - startLine + 1;
+            const coverageRatio = (currentLine-startLine)/allLine;
+
+            Object.assign(options, {
+                over: {
+                    top: coverageRatio
+                }
+            });
+        }
+
         self._scrollTo(target, options);
-
-
     }
 
 }
