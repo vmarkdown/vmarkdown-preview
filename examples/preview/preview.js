@@ -25,11 +25,32 @@ const theme = new Vue({
     }
 });
 
-const VMarkDown = require('vmarkdown');
-
 import Preview from '../../src/vmarkdown-preview';
 const preview = new Preview({
     scrollContainer: window //'#preview'
+});
+
+const VMarkDown = require('vmarkdown');
+Vue.use(VMarkDown);
+
+const vmarkdown = new VMarkDown({
+    config: {
+        root: {
+            tagName: 'main',
+            className: 'markdown-body'
+        }
+    }
+});
+
+requirejs([
+    'vremark-plugin-highlight'
+], function () {
+    Array.prototype.slice.call(arguments).forEach(function (plugin) {
+        vmarkdown.registerPlugin(plugin);
+    });
+    setTimeout(function () {
+        app.refresh();
+    }, 2000);
 });
 
 const app = new Vue({
@@ -38,45 +59,65 @@ const app = new Vue({
         vdom: null
     },
     methods: {
-        refresh() {
+        refresh(value) {
             const self = this;
-            console.time('refresh');
-            const vdom = self.vmarkdown.refresh();
-            console.timeEnd('refresh');
-            self.vdom = vdom;
+            // console.time('refresh');
+            // const vdom = self.vmarkdown.refresh();
+            // console.timeEnd('refresh');
+            // self.vdom = vdom;
+            self.setValue(value || this.value);
         },
         async setValue(md) {
+            this.value = md;
             const vdom = await this.vmarkdown.process(md);
             this.vdom = vdom;
         },
         scrollTo(firstVisibleLine) {
+            const self = this;
             const node = this.vmarkdown.findNodeFromLine(firstVisibleLine);
-            preview.scrollTo(node, firstVisibleLine);
+            preview.scrollTo(self, node, firstVisibleLine);
         },
         activeTo(cursor) {
+            const self = this;
             const node = this.vmarkdown.findNode(cursor);
-            preview.activeTo(node, cursor);
+            preview.activeTo(self, node, cursor);
         }
     },
     render(h) {
         return this.vdom;
     },
+    beforeMount(){
+        const self = this;
+        const h = self.$createElement;
+        vmarkdown.h = h;
+        self.vmarkdown = vmarkdown;
+        // vmarkdown.$on('refresh', function (value) {
+        //     self.refresh(value);
+        // });
+    },
     mounted() {
         const self = this;
 
-        const h = this.$createElement;
-        const vmarkdown = new VMarkDown({
-            h: h,
-            pluginManager: null,
-            rootClassName: 'markdown-body',
-            hashid: true
-        });
+        // const h = this.$createElement;
+        // const vmarkdown = new VMarkDown({
+        //     // h: h,
+        //     // pluginManager: null,
+        //     // rootClassName: 'markdown-body',
+        //     // hashid: true
+        //     config: {
+        //         root: {
+        //             tagName: 'main',
+        //             className: 'markdown-body'
+        //         }
+        //     }
+        // });
+        // vmarkdown.h = h;
 
         // vmarkdown.$on('refresh', function (hast) {
         //     self.refresh(hast);
         // });
 
-        self.vmarkdown = vmarkdown;
+        // self.vmarkdown = vmarkdown;
 
         const md = localStorage.getItem('change') || require('../md/test.md');
         self.setValue(md);
@@ -109,7 +150,9 @@ window.addEventListener("storage", function(event){
     }
 });
 
-
+setTimeout(function () {
+    app.scrollTo(163);
+}, 3000);
 
 
 

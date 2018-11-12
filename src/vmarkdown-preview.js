@@ -27,6 +27,17 @@ export default class VMarkDownPreview extends Preview {
         return null;
     }
 
+    _getDom(vm, node) {
+        if(node.data && node.data.ref) {
+            var dom = vm.$refs[node.data.ref];
+            if(dom._isVue) {
+                dom = dom.$el;
+            }
+            return dom;
+        }
+        return null;
+    }
+
     setValue() {
 
     }
@@ -37,14 +48,15 @@ export default class VMarkDownPreview extends Preview {
         self.$scrollContainer.scrollTo(target, options);
     }
 
-    scrollTo(node, firstVisibleLine) {
+    scrollTo(vm, node, firstVisibleLine) {
         if(!node) return;
 
         const self = this;
-        const id = self._getId(node);
-        if(!id) return;
 
-        const target = '#'+id;
+        const target = self._getDom(vm, node);
+
+        if(!target) return;
+
         const options = {};
 
         if(node) {
@@ -65,7 +77,7 @@ export default class VMarkDownPreview extends Preview {
     }
 
     // at grade
-    activeTo(node, cursor) {
+    activeTo(vm, node, cursor) {
         const self = this;
 
         if(self.activeEl) {
@@ -74,9 +86,8 @@ export default class VMarkDownPreview extends Preview {
 
         if(!node) return;
 
-        const id = self._getId(node);
-        if(!id) return;
-        const target = '#'+id;
+        const target = self._getDom(vm, node);
+        if(!target) return;
 
         var $dom = $(target);
         $dom.addClass(ACTIVE_CLASS);

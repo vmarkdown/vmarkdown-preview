@@ -101,36 +101,21 @@ return /******/ (function(modules) { // webpackBootstrap
 /* WEBPACK VAR INJECTION */(function(process) {const NodeUtil = __webpack_require__(2);
 const Event = __webpack_require__(4);
 const render = __webpack_require__(5);
-const PromiseWorker = __webpack_require__(6);
 
-const Worker = __webpack_require__(7);
-const worker = new Worker();
-const promiseWorker = new PromiseWorker(worker);
+const workerParse = __webpack_require__(6);
 
-function workerParse(markdown, options) {
-    return promiseWorker.postMessage({
-        markdown: markdown,
-        options: options
-    });
-}
+function h(tagName, data, value) { return value }
 
 class VMarkDown {
 
     constructor(options) {
         const self = this;
 
-        self.options = Object.assign({
-            rootClassName: 'markdown-body',
-            rootTagName: 'main',
-            hashid: true
-        }, options?{
-            rootClassName: options.rootClassName,
-            rootTagName: options.rootTagName,
-            hashid: options.hashid
-        }:{});
+        self.options = options || {};
 
-        self.pluginManager = options.pluginManager;
-        self.h = options.h || function (tagName, data, value) { return value };
+        self.plugins = self.options.plugins || {};
+        // self.h = options.h || function (tagName, data, value) { return value };
+        self.h = h;
 
         self.mdast = {};
         self.hast = {
@@ -147,96 +132,54 @@ class VMarkDown {
         };
     }
 
-    async refresh(value) {
-        // const self = this;
-        // const vdom = render(self.hast, {
-        //     h: self.h
-        // });
-        // return vdom;
-
-        return await process(value);
+    registerPlugin(plugin) {
+        VMarkDown.Vue && VMarkDown.Vue.component(plugin.component.name, plugin.component);
+        this.plugins[plugin.name] = {
+            component: plugin.component.name
+        };
     }
 
-    async render1(markdown = '', options) {
+    async process(markdown = '') {
+
         const self = this;
 
-        console.time('worker');
-        const {mdast, hast, plugins} = await parse(markdown, {
-            rootClassName: 'markdown-body',
-            rootTagName: 'main',
-            hashid: true
+        const options = Object.assign({}, self.options, {
+            plugins: self.plugins
         });
-        console.timeEnd('worker');
 
-        console.log( mdast );
-        console.log( hast );
-        console.log( plugins );
-
+        const {mdast, hast} = await VMarkDown.parse(markdown, options);
+        self.mdast = mdast;
         self.hast = hast;
 
-        console.time('plugins');
-        self.pluginManager && self.pluginManager.load(plugins, function () {
-            console.timeEnd('plugins');
-            self.$emit('refresh', hast);
+        const vdom = VMarkDown.render(hast, {
+            h: self.h,
+            plugins: self.plugins
         });
 
-        console.time('render');
-        const vdom = render(hast, options);
-        console.timeEnd('render');
-
         return vdom;
+    }
+
+    async refresh(value) {
+        return await process(value);
     }
 
     static async parse(markdown, options) {
 
         console.time('worker');
-        const {mdast, hast, plugins} = await workerParse(markdown, options);
+        const {mdast, hast} = await workerParse(markdown, options);
         console.timeEnd('worker');
 
         console.log( mdast );
         console.log( hast );
-        console.log( plugins );
+        // console.log( plugins );
 
-        return {mdast, hast, plugins};
+        return {mdast, hast};
     }
 
     static render(hast, options) {
         console.time('render');
         const vdom = render(hast, options);
         console.timeEnd('render');
-        return vdom;
-    }
-
-    async process(markdown = '', noDetect) {
-        const self = this;
-
-        const {mdast, hast, plugins} = await VMarkDown.parse(markdown,
-            Object.assign({}, self.options, self.pluginManager?{
-                plugins: self.pluginManager.getPlugins()
-            }:{})
-        );
-
-        self.mdast = mdast;
-        self.hast = hast;
-
-        // console.time('plugins');
-        // self.pluginManager && self.pluginManager.load(plugins, function () {
-        //     console.timeEnd('plugins');
-        //     self.$emit('refresh', hast);
-        // });
-        if( !noDetect && self.pluginManager && plugins.length > 0 ){
-            self.pluginManager.load(plugins).then(function (loaded) {
-                var isRefresh = loaded?loaded.length>0:false;
-                if(isRefresh) {
-                    self.$emit('refresh', markdown);
-                }
-            });
-        }
-
-        const vdom = VMarkDown.render(hast, {
-            h: self.h
-        });
-
         return vdom;
     }
 
@@ -259,9 +202,13 @@ class VMarkDown {
     }
 }
 
-VMarkDown.PluginManager = render.PluginManager;
+// VMarkDown.PluginManager = render.PluginManager;
 
 Event.mixin(VMarkDown);
+
+VMarkDown.install = function (Vue, options) {
+    VMarkDown.Vue = Vue;
+};
 
 module.exports = VMarkDown;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(1)))
@@ -751,16 +698,9 @@ module.exports =
 
 const toVDom = __webpack_require__(1);
 
-// const PluginManager = require('./plugin-manager');
-
-function render(hast, options) {
+module.exports = function render(hast, options) {
     return toVDom(hast, options);
-}
-
-// render.PluginManager = PluginManager;
-
-module.exports = render;
-
+};
 
 
 /***/ }),
@@ -775,9 +715,7 @@ module.exports = __webpack_require__(2);
 /***/ (function(module, exports, __webpack_require__) {
 
 var Parser = __webpack_require__(3);
-// var data = require('./data');
 module.exports = function toDom(node, options) {
-    // data(node, options);
     var parser = new Parser(options);
     return parser.parse(node);
 };
@@ -786,16 +724,14 @@ module.exports = function toDom(node, options) {
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var mode = __webpack_require__(4);
-var renderer = __webpack_require__(5);
+var renderer = __webpack_require__(4);
+// var data = require('./data');
 
 function Parser(options) {
     this.options = options || {};
-    this.dataFuc = null;
     this.h = this.options.h || function (tagName, properties, value) {
         return value;
     };
-    // this.renderer = this.options.renderer || renderer;
     this.renderer = Object.assign(renderer, this.options.renderer || {});
 }
 
@@ -804,7 +740,7 @@ Parser.prototype.parseNodes = function(nodes, parent) {
     var vnodes = [];
     for(var i=0;i<nodes.length;i++){
         var node = nodes[i];
-        node.index = i;
+        // node.index = i;
         node.parent = parent;
         var tempNode = this.parseNode(node);
         tempNode && vnodes.push(tempNode);
@@ -812,7 +748,7 @@ Parser.prototype.parseNodes = function(nodes, parent) {
     return vnodes;
 };
 
-Parser.prototype.parseNode = function(node, parent) {
+Parser.prototype.parseNode = function(node) {
     if(!node) return null;
     var children = this.parseNodes(node.children, node);
     var h = this.h;
@@ -821,24 +757,9 @@ Parser.prototype.parseNode = function(node, parent) {
         console.error('renderer:'+node.type+' not found!');
         return null;
     }
-    return this.renderer[node.type].apply(null, [h, node, node.data, children, this.options]);
-
-    /*
-    var properties = {};
-    if(!this.dataFuc){
-        var data = mode(node, h, this.options.mode);
-        if(data) {
-            this.dataFuc = data;
-        }
-    }
-    if(this.dataFuc){
-        properties = this.dataFuc(node, this.options);
-    }
-
-    if(!this.renderer[node.type]){
-        throw new Error('renderer:'+node.type+' not found!');
-    }
-    return this.renderer[node.type].apply(null, [h, node, properties, children, this.options]);*/
+    // const _data = data(node, this.options);
+    // return this.renderer[node.type].apply(null, [h, node, _data, children, this.options]);
+    return this.renderer[node.type].apply(null, [h, node, node.data || {}, children, this.options]);
 };
 
 Parser.prototype.parse = function(root) {
@@ -857,102 +778,27 @@ module.exports = Parser;
 /* 4 */
 /***/ (function(module, exports) {
 
-function isFunction(functionToCheck) {
-    var getType = {};
-    return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-}
-
-function isString(str) {
-    return typeof str === 'string' || str instanceof String;
-}
-
-var defaultModes = {
-
-    'vue': {
-        test: function (h) {
-            return h && h.toString().indexOf('vm') > -1;
-        },
-        data: function (node, options) {
-
-            var props = node.data || {};
-
-            props.attrs = props.attrs || {};
-
-            Object.assign(props.attrs, node.properties);
-
-            if(node.hasOwnProperty('hash')) {
-                options.hashid && Object.assign(props.attrs, {
-                    id: node.hash
-                });
-
-                Object.assign(props, {
-                    key: node.hash
-                });
-            }
-
-            return props;
-
-        }
-    },
-
-    'preact': {
-        test: function () {
-            return false;
-        },
-        data: function (node) {
-            return node.properties;
-        }
-    }
-
-};
-
-module.exports = function (node, h, mode) {
-
-    if(mode) {
-        if( isString(mode) && defaultModes.hasOwnProperty(mode) ) {
-            return defaultModes[mode].data;
-        }
-
-        if( isFunction(mode) ) {
-            return mode;
-        }
-    }
-
-    var list = Object.keys(defaultModes);
-    for (var i=0;i<list.length;i++) {
-        var item = list[i];
-        var m = defaultModes[item];
-        if( m.test(h) ) {
-            return m.data;
-        }
-    }
-
-    return null;
-};
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
 module.exports = {
 
-    root: function(h, node, data, children, options) {
-        return h(node.tagName, data, children);
+    root: function(h, node, data, children) {
+        return h(node.tagName || 'div', data, children);
     },
-    element: function(h, node, data, children, options) {
+    element: function(h, node, data, children) {
         return h(node.tagName, data, children);
     },
     text: function(h, node) {
         return node.value;
     },
-    comment: function () {
-        
-    },
-    // component: function (h, node, data) {
-    //     return h(node.component, data);
+    // component: function(h, node, data) {
+    //     return h(node.tagName, data);
     // },
-    raw: function (h, node) {
-        return node.value;
+    raw: function(h, node, data) {
+        data = {
+            domProps: {
+                innerHTML: node.value
+            }
+        };
+        return h('div', data);
     }
 
 };
@@ -963,6 +809,114 @@ module.exports = {
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports) {
+
+module.exports =
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "vremark/";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const PromiseWorker = __webpack_require__(1);
+const Worker = __webpack_require__(2);
+const worker = new Worker();
+const promiseWorker = new PromiseWorker(worker);
+
+module.exports = function parse(markdown, options) {
+    return promiseWorker.postMessage({
+        markdown: markdown,
+        options: options
+    });
+};
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1036,12 +990,15 @@ module.exports = PromiseWorker
 
 
 /***/ }),
-/* 7 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = function() {
-  return new Worker(__webpack_require__.p + "vmarkdown.worker.js");
+  return new Worker(__webpack_require__.p + "vremark.worker.js");
 };
+
+/***/ })
+/******/ ]);
 
 /***/ })
 /******/ ]);
