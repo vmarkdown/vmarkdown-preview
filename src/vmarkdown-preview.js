@@ -48,6 +48,13 @@ export default class VMarkDownPreview extends Preview {
         self.$scrollContainer.scrollTo(target, options);
     }
 
+    goTop(){
+        const self = this;
+        self.$scrollContainer.scrollTo({
+            top: 0
+        });
+    }
+
     scrollTo(vm, node, firstVisibleLine) {
         if(!node) return;
 
