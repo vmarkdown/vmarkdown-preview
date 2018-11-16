@@ -10,6 +10,7 @@ export default class VMarkDownPreview extends Preview {
     constructor(options) {
         super();
         const self = this;
+        self.$previewContainer = $(options.previewContainer || window);
         self.$scrollContainer = $(options.scrollContainer || window);
         self.activeEl = null;
 
@@ -137,6 +138,19 @@ export default class VMarkDownPreview extends Preview {
         }
 
         self._scrollTo(target, options);
+    }
+
+    enterPreview() {
+        const self = this;
+        if(self.activeEl) {
+            self.activeEl.removeClass(ACTIVE_CLASS);
+        }
+        self.$previewContainer.css('max-width', '960px');
+    }
+
+    leavePreview() {
+        const self = this;
+        self.$previewContainer.css('max-width', '680px');
     }
 
 }

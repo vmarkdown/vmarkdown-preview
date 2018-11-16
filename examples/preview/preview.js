@@ -30,6 +30,7 @@ const Vue = require('vue').default;
 
 import Preview from '../../src/vmarkdown-preview';
 const preview = new Preview({
+    previewContainer: '#preview',
     scrollContainer: window //'#preview'
 });
 
@@ -131,6 +132,14 @@ window.addEventListener("storage", function(event){
     const key = event.key;
     const value = event.newValue;
     switch (key) {
+        case 'enterPreview':{
+            preview.enterPreview();
+            break;
+        }
+        case 'leavePreview':{
+            preview.leavePreview();
+            break;
+        }
         case 'refresh':{
             const md = localStorage.getItem('change');
             app.setValue(md);
