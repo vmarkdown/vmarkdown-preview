@@ -1,17 +1,21 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const fs = require('fs');
+const { VueLoaderPlugin } = require('vue-loader');
 
 function getFile(filepath) {
     return fs.readFileSync(filepath,'utf-8');
 }
 
+const production = false;
+
 module.exports = {
-    // mode: 'none',
-    mode: 'development',
+    mode: 'none',
+    // mode: 'development',
     target: 'web',
     entry: {
         // 'vmarkdown': path.resolve(__dirname, 'vmarkdown/index.js'),
+        'example-main': path.resolve(__dirname, 'main/main.js'),
         'example-editor': path.resolve(__dirname, 'editor/editor.js'),
         'example-preview': path.resolve(__dirname, 'preview/preview.js')
     },
@@ -27,16 +31,39 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.md$/,
+                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                use: {
+                    loader:'file-loader',
+                    options: {
+                        // name: '[path][name].[ext]',
+                        // name: production?'fonts/[name].[hash].[ext]':'[path][name].[ext]',
+                        name: 'fonts/[name].[hash].[ext]',
+                        context: 'src'
+                    }
+                }
+            },
+            {
+                test: /\.(jpg|png|gif)$/,
+                use: {
+                    loader:'file-loader',
+                    options: {
+                        name: production?'images/[name].[hash].[ext]':'[path][name].[ext]',
+                        context:'src'
+                    }
+                }
+            },
+            { test: /\.vue$/, use: 'vue-loader' },
+            {
+                test: /\.(md|html)$/,
                 use: 'text-loader'
             },
-            // {
-            //     test: /\.css$/,
-            //     use: [
-            //         { loader: "style-loader" },
-            //         { loader: "css-loader" }
-            //     ]
-            // },
+            {
+                test: /\.css$/,
+                use: [
+                    { loader: "style-loader" },
+                    { loader: "css-loader" }
+                ]
+            },
             {
                 test: /\.theme\.css$/,
                 use: [
@@ -56,6 +83,7 @@ module.exports = {
             {
                 test: /\.scss$/,
                 use: [
+                    "vue-style-loader",
                     "style-loader",
                     "css-loader",
                     "sass-loader"
@@ -66,11 +94,12 @@ module.exports = {
     externals: {
     },
     plugins: [
-        // new HtmlWebpackPlugin({
-        //     filename: 'index.html',
-        //     inject: false,
-        //     template: 'examples/index.html'
-        // }),
+        new VueLoaderPlugin(),
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            inject: false,
+            template: 'examples/index.html'
+        }),
         new HtmlWebpackPlugin({
             filename: 'editor.html',
             template: 'examples/editor/editor.html',

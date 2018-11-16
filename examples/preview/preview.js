@@ -1,29 +1,32 @@
+require("github-markdown-css");
+
 const $ = require('jquery');
-const themes = require('./themes.js');
 
-const theme = new Vue({
-    el: '#theme',
-    data: function () {
-        return {
-            theme: null,
-            themes: themes
-        };
-    },
-    watch: {
-        theme(newTheme, oldTheme) {
-            if(oldTheme){
-                oldTheme.css.unuse();
-                oldTheme.rootClassName && $('#preview').removeClass(oldTheme.rootClassName);
-            }
-
-            newTheme.css.use();
-            newTheme.rootClassName && $('#preview').addClass(newTheme.rootClassName);
-        }
-    },
-    mounted() {
-        this.theme = themes[0];
-    }
-});
+const Vue = require('vue').default;
+// const themes = require('./themes.js');
+// const theme = new Vue({
+//     el: '#theme',
+//     data: function () {
+//         return {
+//             theme: null,
+//             themes: themes
+//         };
+//     },
+//     watch: {
+//         theme(newTheme, oldTheme) {
+//             if(oldTheme){
+//                 oldTheme.css.unuse();
+//                 oldTheme.rootClassName && $('#preview').removeClass(oldTheme.rootClassName);
+//             }
+//
+//             newTheme.css.use();
+//             newTheme.rootClassName && $('#preview').addClass(newTheme.rootClassName);
+//         }
+//     },
+//     mounted() {
+//         this.theme = themes[0];
+//     }
+// });
 
 import Preview from '../../src/vmarkdown-preview';
 const preview = new Preview({
@@ -42,16 +45,16 @@ const vmarkdown = new VMarkDown({
     }
 });
 
-requirejs([
-    'vremark-plugin-highlight'
-], function () {
-    Array.prototype.slice.call(arguments).forEach(function (plugin) {
-        vmarkdown.registerPlugin(plugin);
-    });
-    setTimeout(function () {
-        app.refresh();
-    }, 2000);
-});
+// requirejs([
+//     'vremark-plugin-highlight'
+// ], function () {
+//     Array.prototype.slice.call(arguments).forEach(function (plugin) {
+//         vmarkdown.registerPlugin(plugin);
+//     });
+//     setTimeout(function () {
+//         app.refresh();
+//     }, 2000);
+// });
 
 const app = new Vue({
     el: '#app',
@@ -150,9 +153,58 @@ window.addEventListener("storage", function(event){
     }
 });
 
-setTimeout(function () {
-    app.scrollTo(163);
-}, 3000);
+// setTimeout(function () {
+//     app.scrollTo(163);
+// }, 3000);
+
+
+
+
+
+
+
+
+
+
+// import * as VueMenu from '@hscmap/vue-menu'
+// Vue.use(VueMenu);
+// import Sample1 from './menu.vue';
+// Vue.component('mymenu', Sample1);
+// const tools = new Vue({
+//     el: '#tools',
+//     computed: {
+//         window() { return window },
+//     },
+//     data() {
+//         return {
+//             checked: true,
+//             selected: ['A'],
+//         }
+//     },
+//     template: require('./menu.html')
+// });
+
+
+(function () {
+
+
+    // const tools = new Vue({
+    //     el: '#tools',
+    //     render(h) {
+    //         return h('mymenu',{},'=======')
+    //     }
+    // });
+
+
+
+})();
+
+
+
+
+
+
+
 
 
 

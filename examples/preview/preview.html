@@ -49,7 +49,7 @@
 
     </style>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.17-beta.0/vue.js"></script>
+    <!--<script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.17-beta.0/vue.js"></script>-->
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
 
@@ -69,11 +69,12 @@
 </head>
 <body>
 
-<div id="theme" class="theme-container">
-    <select v-model="theme">
-        <option v-for="theme in themes" :value="theme">{{theme.name}}</option>
-    </select>
-</div>
+<div id="tools"></div>
+<!--<div id="theme" class="theme-container" style="display: none;">-->
+    <!--<select v-model="theme">-->
+        <!--<option v-for="theme in themes" :value="theme">{{theme.name}}</option>-->
+    <!--</select>-->
+<!--</div>-->
 <div id="preview">
     <div id="app"></div>
     <!--<div class="markdown-body"></div>-->
