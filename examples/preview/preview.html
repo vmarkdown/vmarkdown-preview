@@ -11,7 +11,6 @@
         html, body{
             padding: 0;
             margin: 0;
-            height: 100%;
         }
 
         /*#preview {*/
@@ -21,19 +20,19 @@
             /*width: 600px;*/
         /*}*/
 
-        #preview {
-            box-sizing: border-box;
-            min-width: 200px;
-            max-width: 680px;
-            margin: 0 auto;
-            padding: 45px;
-        }
+        /*#preview {*/
+            /*box-sizing: border-box;*/
+            /*min-width: 200px;*/
+            /*max-width: 680px;*/
+            /*margin: 0 auto;*/
+            /*padding: 45px;*/
+        /*}*/
 
-        @media (max-width: 767px) {
-            #preview {
-                padding: 15px;
-            }
-        }
+        /*@media (max-width: 767px) {*/
+            /*#preview {*/
+                /*padding: 15px;*/
+            /*}*/
+        /*}*/
 
 
         /*.markdown-body{*/
@@ -41,44 +40,19 @@
             /*width: 600px;*/
         /*}*/
 
-        .theme-container{
-            position: fixed;
-            top: 10px;
-            right: 10px;
-        }
+        /*.theme-container{*/
+            /*position: fixed;*/
+            /*top: 10px;*/
+            /*right: 10px;*/
+        /*}*/
 
     </style>
 
-    <!--<script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.17-beta.0/vue.js"></script>-->
-
-    <script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
-
-    <script>
-        (function () {
-            try {
-                requirejs.config({
-                    paths: {"vremark-plugin-chart":"vremark/vremark-plugin-chart","vremark-plugin-math-libs":"vremark/vremark-plugin-math-libs","vremark-plugin-math":"vremark/vremark-plugin-math","vremark-plugin-flowchart":"vremark/vremark-plugin-flowchart","vremark-plugin-sequence":"vremark/vremark-plugin-sequence","vremark-plugin-mermaid":"vremark/vremark-plugin-mermaid","vremark-plugin-g2":"vremark/vremark-plugin-g2","vremark-plugin-sequence-libs":"vremark/vremark-plugin-sequence-libs","vremark-plugin-highlight":"vremark/vremark-plugin-highlight","vremark-plugin-flowchart-libs":"vremark/vremark-plugin-flowchart-libs","vremark-plugin-mermaid-libs":"vremark/vremark-plugin-mermaid-libs","vremark-plugin-chart-libs":"vremark/vremark-plugin-chart-libs","vremark-plugin-g2-libs":"vremark/vremark-plugin-g2-libs","vremark-plugin-highlight-libs":"vremark/vremark-plugin-highlight-libs"}
-                });
-            }
-            catch (e) {
-
-            }
-        })();
-    </script>
-
 </head>
-<body>
+<body class="vmarkdown-preview">
 
-<div id="tools"></div>
-<!--<div id="theme" class="theme-container" style="display: none;">-->
-    <!--<select v-model="theme">-->
-        <!--<option v-for="theme in themes" :value="theme">{{theme.name}}</option>-->
-    <!--</select>-->
-<!--</div>-->
-<div id="preview">
-    <div id="app"></div>
-    <!--<div class="markdown-body"></div>-->
-</div>
+<div id="app"></div>
+
 <script src="example-preview.js"></script>
 </body>
 </html>

@@ -1,156 +1,90 @@
+require("github-markdown-css");
 require('./vmarkdown-preview.scss');
-import Preview from './base/preview';
-const $ = require('jquery');
-require('jquery.scrollto');
 
-const ACTIVE_CLASS = 'vmarkdown-preview-active';
+import Vue from 'vue';
+import VueScrollTo from 'vue-scrollto';
+// Vue.use(VueScrollTo);
+// import Component from './vmarkdown-preview.vue';
+// export default Component;
+Vue.use(VueScrollTo, {
+    container: "body",
+    duration: 500,
+    easing: "ease",
+    offset: 0,
+    force: true,
+    cancelable: true,
+    onStart: false,
+    onDone: false,
+    onCancel: false,
+    x: false,
+    y: true
+});
 
-export default class VMarkDownPreview extends Preview {
+const VMarkDown = require('vmarkdown');
+Vue.use(VMarkDown);
 
-    constructor(options) {
-        super();
+const vmarkdown = new VMarkDown({
+    config: {
+        root: {
+            tagName: 'article',
+            className: 'markdown-body'
+        }
+    }
+});
+
+
+export default Vue.extend({
+    // data () {
+    //     return {
+    //         msg: 'Hello world!'
+    //     }
+    // },
+    beforeMount(){
         const self = this;
-        self.$previewContainer = $(options.previewContainer || window);
-        self.$scrollContainer = $(options.scrollContainer || window);
-        self.activeEl = null;
+        vmarkdown.h = self.$createElement;
+    },
+    methods: {
+        async setValue(md) {
+            this.vdom = await vmarkdown.process(md);
+            this.$forceUpdate();
+        },
+        scrollTo() {
 
-        $.scrollTo && $.extend($.scrollTo.defaults, {
-            axis: 'y',
-            duration: 300
-        });
-    }
+            // const options = {
+            //     // container: 'document.documentElement',
+            //     easing: 'ease-in',
+            //     // offset: -60,
+            //     force: true,
+            //     cancelable: true,
+            //     onStart: function(element) {
+            //         // scrolling started
+            //     },
+            //     onDone: function(element) {
+            //         // scrolling is done
+            //     },
+            //     onCancel: function() {
+            //         // scrolling has been interrupted
+            //     },
+            //     x: false,
+            //     y: true
+            // };
 
-    _getId(node) {
-        if(node.data && node.data.attrs) {
-            if( node.data.attrs.id === 0 ) return '0';
-            return node.data.attrs.id;
+            // const cancelScroll = this.$scrollTo('.language-sequence', 3000, options);
+
+            const cancelScroll = this.$scrollTo('.language-sequence');
+
+
         }
-        return null;
-    }
+    },
+    render(h) {
+        return this.vdom || h('div', {}, 'loading...');
+    },
+    mounted() {
 
-    _getDom(vm, node) {
-        if(node.data && node.data.ref) {
-            var dom = vm.$refs[node.data.ref];
-            if(dom._isVue) {
-                dom = dom.$el;
-            }
-            return dom;
-        }
-        return null;
-    }
 
-    setValue() {
+
+
+
 
     }
-
-    _scrollTo(target, options) {
-        const self = this;
-        self.$scrollContainer.stop();
-        self.$scrollContainer.scrollTo(target, options);
-    }
-
-    goTop(){
-        const self = this;
-        self.$scrollContainer.scrollTo({
-            top: 0
-        });
-    }
-
-    scrollTo(vm, node, firstVisibleLine) {
-        if(!node) return;
-
-        const self = this;
-
-        const target = self._getDom(vm, node);
-
-        if(!target) return;
-
-        const options = {};
-
-        if(node) {
-
-            const position = node.position;
-            const startLine = position.start.line;
-            const endLine = position.end.line;
-            const currentLine = firstVisibleLine<startLine?startLine:firstVisibleLine;
-            const allLine = endLine - startLine + 1;
-            const coverageRatio = (currentLine-startLine)/allLine;
-
-            options.over = {
-                top: coverageRatio
-            }
-        }
-
-        self._scrollTo(target, options);
-    }
-
-    // at grade
-    activeTo(vm, node, cursor) {
-        const self = this;
-
-        if(self.activeEl) {
-            self.activeEl.removeClass(ACTIVE_CLASS);
-        }
-
-        if(!node) return;
-
-        const target = self._getDom(vm, node);
-        if(!target) return;
-
-        var $dom = $(target);
-        $dom.addClass(ACTIVE_CLASS);
-        self.activeEl = $dom;
-
-        if($dom.length === 0) {
-            return;
-        }
-
-        const options = {};
-
-        if(cursor) {
-            Object.assign(options, {
-                offset: {
-                    top: -1 * cursor.top
-                }
-            })
-        }
-
-        const position = node.position;
-        if(
-            (
-                node.tagName === 'code' ||
-                (node.data && node.data.props && node.data.props.code)
-            )
-
-            && position && position.start.line < position.end.line) {
-            const firstVisibleLine = cursor.line;
-            const startLine = position.start.line;
-            const endLine = position.end.line;
-            const currentLine = firstVisibleLine<startLine?startLine:firstVisibleLine;
-            const allLine = endLine - startLine + 1;
-            const coverageRatio = (currentLine-startLine)/allLine;
-
-            Object.assign(options, {
-                over: {
-                    top: coverageRatio
-                }
-            });
-        }
-
-        self._scrollTo(target, options);
-    }
-
-    enterPreview() {
-        const self = this;
-        if(self.activeEl) {
-            self.activeEl.removeClass(ACTIVE_CLASS);
-        }
-        self.$previewContainer.css('max-width', '960px');
-    }
-
-    leavePreview() {
-        const self = this;
-        self.$previewContainer.css('max-width', '680px');
-    }
-
-}
+});
