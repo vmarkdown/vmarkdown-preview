@@ -9,8 +9,67 @@
 		root["CodeMirrorEditor"] = factory();
 })(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// install a JSONP callback for chunk loading
+/******/ 	function webpackJsonpCallback(data) {
+/******/ 		var chunkIds = data[0];
+/******/ 		var moreModules = data[1];
+/******/ 		var executeModules = data[2];
+/******/
+/******/ 		// add "moreModules" to the modules object,
+/******/ 		// then flag all "chunkIds" as loaded and fire callback
+/******/ 		var moduleId, chunkId, i = 0, resolves = [];
+/******/ 		for(;i < chunkIds.length; i++) {
+/******/ 			chunkId = chunkIds[i];
+/******/ 			if(installedChunks[chunkId]) {
+/******/ 				resolves.push(installedChunks[chunkId][0]);
+/******/ 			}
+/******/ 			installedChunks[chunkId] = 0;
+/******/ 		}
+/******/ 		for(moduleId in moreModules) {
+/******/ 			if(Object.prototype.hasOwnProperty.call(moreModules, moduleId)) {
+/******/ 				modules[moduleId] = moreModules[moduleId];
+/******/ 			}
+/******/ 		}
+/******/ 		if(parentJsonpFunction) parentJsonpFunction(data);
+/******/
+/******/ 		while(resolves.length) {
+/******/ 			resolves.shift()();
+/******/ 		}
+/******/
+/******/ 		// add entry modules from loaded chunk to deferred list
+/******/ 		deferredModules.push.apply(deferredModules, executeModules || []);
+/******/
+/******/ 		// run deferred modules when all chunks ready
+/******/ 		return checkDeferredModules();
+/******/ 	};
+/******/ 	function checkDeferredModules() {
+/******/ 		var result;
+/******/ 		for(var i = 0; i < deferredModules.length; i++) {
+/******/ 			var deferredModule = deferredModules[i];
+/******/ 			var fulfilled = true;
+/******/ 			for(var j = 1; j < deferredModule.length; j++) {
+/******/ 				var depId = deferredModule[j];
+/******/ 				if(installedChunks[depId] !== 0) fulfilled = false;
+/******/ 			}
+/******/ 			if(fulfilled) {
+/******/ 				deferredModules.splice(i--, 1);
+/******/ 				result = __webpack_require__(__webpack_require__.s = deferredModule[0]);
+/******/ 			}
+/******/ 		}
+/******/ 		return result;
+/******/ 	}
+/******/
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
+/******/
+/******/ 	// object to store loaded and loading chunks
+/******/ 	// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 	// Promise = chunk loading, 0 = chunk loaded
+/******/ 	var installedChunks = {
+/******/ 		0: 0
+/******/ 	};
+/******/
+/******/ 	var deferredModules = [];
 /******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
@@ -89,9 +148,18 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/ 	var jsonpArray = window["webpackJsonpCodeMirrorEditor"] = window["webpackJsonpCodeMirrorEditor"] || [];
+/******/ 	var oldJsonpFunction = jsonpArray.push.bind(jsonpArray);
+/******/ 	jsonpArray.push = webpackJsonpCallback;
+/******/ 	jsonpArray = jsonpArray.slice();
+/******/ 	for(var i = 0; i < jsonpArray.length; i++) webpackJsonpCallback(jsonpArray[i]);
+/******/ 	var parentJsonpFunction = oldJsonpFunction;
 /******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/
+/******/ 	// add entry module to deferred list
+/******/ 	deferredModules.push([0,1]);
+/******/ 	// run deferred modules when ready
+/******/ 	return checkDeferredModules();
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -122,8 +190,25 @@ module.exports = Editor;
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
+__webpack_require__(4);
+
+const CodeMirror = __webpack_require__(5);
+
+__webpack_require__(6);
+__webpack_require__(7);
+
+__webpack_require__(9);
+__webpack_require__(10);
+
+__webpack_require__(11);
+__webpack_require__(12);
+
+__webpack_require__(13);
+__webpack_require__(14);
+
+
 // import Editor from './base/editor';
-const Editor = __webpack_require__(4);
+const Editor = __webpack_require__(15);
 
 // var deepClone = function (obj) {
 //     var _tmp,result;
@@ -131,6 +216,45 @@ const Editor = __webpack_require__(4);
 //     result = JSON.parse(_tmp);
 //     return result;
 // }
+
+const util = __webpack_require__(16);
+
+// "text/markdown"
+CodeMirror.defineMode("vmarkdown", function(config, parserConfig) {
+    var mustacheOverlay = {
+        token1: function(stream, state) {
+            var ch;
+            if (stream.match("{{")) {
+                while ((ch = stream.next()) != null)
+                    if (ch == "}" && stream.next() == "}") {
+                        stream.eat("}");
+                        return "mustache";
+                    }
+            }
+            while (stream.next() != null && !stream.match("{{", false)) {}
+            return null;
+        },
+        token: function(stream, state) {
+            // debugger
+            // if (stream.match("[TOC]", true, true)) {
+            //     return "toc";
+            // }
+            // while (stream.next() != null && !stream.match("[TOC]", false, true)) {}
+            // return null;
+
+            var match = stream.match(/^ {0,3}\[(TOC|toc)\]/, true, true);
+            if( match ) {
+                return "toc";
+            }
+            else {
+                stream.skipToEnd();
+            }
+            return null;
+        }
+    };
+    return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "text/markdown"), mustacheOverlay);
+});
+
 
 class CodeMirrorEditor extends Editor {
 
@@ -142,12 +266,14 @@ class CodeMirrorEditor extends Editor {
             Object.assign({
                 theme:'default vmarkdown',
                 value: '',
-                mode:  "markdown",
+                mode:  "vmarkdown",
+                // mode:  "markdown",
                 // viewportMargin: 100,
                 // maxHighlightLength: Infinity,
                 lineWrapping: true,
                 styleActiveLine: true,
-                scrollbarStyle: "native", //overlay
+                // scrollbarStyle: "native", //overlay simple
+                scrollbarStyle: "native",
 
                 dragDrop: true,
                 selectionsMayTouch: false,
@@ -307,13 +433,14 @@ class CodeMirrorEditor extends Editor {
 
     getValue() {
         const self = this;
-        return self.editor.getValue();
+        const value = util.trimTrailingLines(self.editor.getValue());
+        return value;
     }
 
     setValue(value) {
         const self = this;
-        const newValue = value + '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n';
-        self.editor.setValue(newValue);
+        // const newValue = value + '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n';
+        self.editor.setValue(value);
     }
 
     scrollTo(scrollTop) {
@@ -334,7 +461,80 @@ class CodeMirrorEditor extends Editor {
     }
 
     getScrollTop() {
+        const self = this;
+        return self.editor.display.scroller.scrollTop;
+    }
 
+    getFirstVisibleCoverageRatio(firstVisibleLine, position) {
+        const self = this;
+
+
+        if( position.start.line === position.end.line ) {
+
+            const lineIndex = firstVisibleLine - 1;
+            var heightAtLine = self.editor.heightAtLine(lineIndex);
+            var lineHandle = self.editor.getLineHandle(lineIndex);
+            var height = lineHandle.height;
+
+            // console.log('getLineHandle', heightAtLine);
+            // console.log('height', height);
+
+            const coverageRatio = height?(heightAtLine/height):0;
+
+            return {
+                line: firstVisibleLine,
+                // height: height,
+                // top: heightAtLine,
+                coverageRatio: coverageRatio
+            };
+
+        }
+
+        // const coverageRatio = height?(heightAtLine/height):0;
+
+        // const startLine = (firstVisibleLine<position.start.line)?position.start.line;
+        const startLine = position.start.line;
+        const endLine = position.end.line;
+
+        const allLine = endLine - startLine + 1;
+
+        const currentLine = (firstVisibleLine<position.start.line)?position.start.line:firstVisibleLine;
+
+        return {
+            line: firstVisibleLine,
+            coverageRatio: currentLine/allLine
+        }
+
+
+
+
+        // var top = self.editor.display.scroller.scrollTop;
+        // var result = self.editor.coordsChar({
+        //     top: top,
+        //     left: 0
+        // }, 'local');
+        // let lineIndex = result.line;
+
+
+        // var heightAtLine = self.editor.heightAtLine(lineIndex);
+        // var lineHandle = self.editor.getLineHandle(lineIndex);
+        // var height = lineHandle.height;
+        //
+        // console.log('getLineHandle', heightAtLine);
+        // console.log('height', height);
+        //
+        // var p = height?(heightAtLine/height):0;
+        //
+        // // debugger
+        // console.log('p', p);
+        //
+        // let line = lineIndex + 1;
+        // return {
+        //     line: line,
+        //     height: height,
+        //     top: heightAtLine,
+        //
+        // };
     }
 
     getFirstVisibleLine() {
@@ -345,6 +545,32 @@ class CodeMirrorEditor extends Editor {
             left: 0
         }, 'local');
         let lineIndex = result.line;
+
+
+
+
+
+        // var lineIndex = firstVisibleLine-1;
+        // console.log('getLineHandle', editor.editor.getLineHandle(lineIndex));
+        // console.log('heightAtLine', editor.editor.heightAtLine(lineIndex));
+
+        // var heightAtLine = self.editor.heightAtLine(lineIndex);
+        // var lineHandle = self.editor.getLineHandle(lineIndex);
+        // var height = lineHandle.height;
+        //
+        // console.log('getLineHandle', heightAtLine);
+        // console.log('height', height);
+        //
+        // var p = height?(heightAtLine/height):0;
+        //
+        // // debugger
+        // console.log('p', p);
+
+
+
+
+
+
         let line = lineIndex + 1;
         return line;
     }
@@ -357,14 +583,30 @@ class CodeMirrorEditor extends Editor {
         const self = this;
         return self.editor.doc.getLine(line - 1);
     }
+
+
+    openSma() {
+
+    }
+
 }
 
 module.exports = CodeMirrorEditor;
-// export default CodeMirrorEditor;
 
 
 /***/ }),
-/* 4 */
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */,
+/* 11 */,
+/* 12 */,
+/* 13 */,
+/* 14 */,
+/* 15 */
 /***/ (function(module, exports) {
 
 // import Emitter from './emitter';
@@ -400,6 +642,27 @@ class Editor {
 }
 
 module.exports = Editor;
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+module.exports = {
+    trimTrailingLines: function trimTrailingLines(value) {
+    var val = value;
+    var index = val.length - 1;
+    while (index >= 0) {
+        var v = val.charAt(index);
+        if(v !== '\n' && v !== ' '){
+            break
+        }
+        --index;
+    }
+
+    return val.slice(0, index + 1)
+}
+};
+
 
 /***/ })
 /******/ ]);
