@@ -2,33 +2,70 @@ require('./css/photon.css');
 
 require('./main.scss');
 
-setTimeout(function () {
+const store = require('./store');
+window.__store__ = store;
+
+const editorIFrame = document.getElementById('editor-iframe');
+const previewIFrame = document.getElementById('preview-iframe');
+
+editorIFrame.src = 'editor.html';
+previewIFrame.src = 'preview.html';
+
+editorIFrame.onload = function () {
+
+};
+previewIFrame.onload = function () {
+    // const md = require('../md/demo.md');
+    // store.dispatch('vmarkdown/parse', md);
+    // store.$emit('vmarkdown/parse', md);
+};
 
 
-}, 3000);
+let status = 'all';
 
-let status = false;
+document.getElementById('btn-preview').addEventListener('click', function () {
 
-function enterPreview() {
-    document.getElementById('editor-panel').style.display = 'none';
-    document.getElementById('preview-panel').style.width = '100%';
-    localStorage.setItem('enterPreview', 'true'+new Date().getTime());
-}
-
-function leavePreview() {
-    document.getElementById('editor-panel').style.display = 'block';
-    document.getElementById('preview-panel').style.width = '50%';
-    localStorage.setItem('leavePreview', 'true'+new Date().getTime());
-}
-
-document.getElementById('desktop').addEventListener('click', function () {
-
-    if(status) {
-        leavePreview();
+    if(status === 'all'){
+        document.getElementById('editor-panel').style.display = 'none';
+        document.getElementById('preview-panel').style.width = '100%';
+        status = 'preview';
     }
     else{
-        enterPreview();
+        document.getElementById('editor-panel').style.display = 'block';
+        document.getElementById('preview-panel').style.width = '50%';
+        status = 'all';
     }
-    status = !status;
 
-}, false);
+});
+
+
+// setTimeout(function () {
+//
+//
+// }, 3000);
+//
+// let status = false;
+//
+// function enterPreview() {
+//     document.getElementById('editor-panel').style.display = 'none';
+//     document.getElementById('preview-panel').style.width = '100%';
+//     localStorage.setItem('enterPreview', 'true'+new Date().getTime());
+// }
+//
+// function leavePreview() {
+//     document.getElementById('editor-panel').style.display = 'block';
+//     document.getElementById('preview-panel').style.width = '50%';
+//     localStorage.setItem('leavePreview', 'true'+new Date().getTime());
+// }
+//
+// document.getElementById('desktop').addEventListener('click', function () {
+//
+//     if(status) {
+//         leavePreview();
+//     }
+//     else{
+//         enterPreview();
+//     }
+//     status = !status;
+//
+// }, false);

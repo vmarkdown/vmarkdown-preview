@@ -18,6 +18,7 @@ module.exports = {
     },
     resolve: {
         alias: {
+            'vmarkdown': path.resolve(__dirname, 'examples/www/vmarkdown', 'vmarkdown.js'),
         }
     },
     module: {
@@ -37,7 +38,7 @@ module.exports = {
         ]
     },
     externals: {
-        // 'vremark': 'vremark'
+        // 'vmarkdown': 'VMarkDown'
     },
     plugins: [
         new MiniCssExtractPlugin({

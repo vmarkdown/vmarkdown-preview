@@ -14,8 +14,8 @@
     <!--</header>-->
 
     <header class="toolbar toolbar-header">
-        <h1 class="title">Markdown</h1>
-
+        <h1 class="title">Markdown Editor</h1>
+        <!--<div style="height: 5px;"></div>-->
         <div class="toolbar-actions">
             <div class="btn-group">
                 <button class="btn btn-default">
@@ -40,8 +40,12 @@
                 Filters
             </button>
 
-            <button class="btn btn-default btn-dropdown pull-right">
-                <span class="icon icon-megaphone"></span>
+            <!--<button class="btn btn-default btn-dropdown pull-right">-->
+                <!--<span class="icon icon-megaphone"></span>-->
+            <!--</button>-->
+
+            <button class="btn btn-default pull-right" id="btn-preview">
+                <span class="icon icon-eye"></span>
             </button>
         </div>
     </header>
@@ -49,49 +53,49 @@
     <!-- Your app's content goes inside .window-content -->
     <div class="window-content">
         <div class="pane-group">
-            <div class="pane pane-sm sidebar">
-            <nav class="nav-group">
-                <h5 class="nav-group-title">Favorites</h5>
-                <span class="nav-group-item">
-                    <span class="icon icon-home"></span>
-                    connors
-                </span>
-                <span class="nav-group-item active">
-                    <span class="icon icon-light-up"></span>
-                    Photon
-                </span>
-                <span class="nav-group-item">
-                    <span class="icon icon-download"></span>
-                    Downloads
-                </span>
-                <span class="nav-group-item">
-                    <span class="icon icon-folder"></span>
-                    Documents
-                </span>
-                <span class="nav-group-item">
-                    <span class="icon icon-window"></span>
-                    Applications
-                </span>
-                <span class="nav-group-item">
-                    <span class="icon icon-signal"></span>
-                    AirDrop
-                </span>
-                <span class="nav-group-item" id="desktop">
-                    <span class="icon icon-monitor"></span>
-                    Desktop
-                </span>
-            </nav>
-        </div>
+            <!--<div class="pane pane-sm sidebar">-->
+                <!--<nav class="nav-group">-->
+                <!--<h5 class="nav-group-title">Favorites</h5>-->
+                <!--<span class="nav-group-item">-->
+                    <!--<span class="icon icon-home"></span>-->
+                    <!--connors-->
+                <!--</span>-->
+                <!--<span class="nav-group-item active">-->
+                    <!--<span class="icon icon-light-up"></span>-->
+                    <!--Photon-->
+                <!--</span>-->
+                <!--<span class="nav-group-item">-->
+                    <!--<span class="icon icon-download"></span>-->
+                    <!--Downloads-->
+                <!--</span>-->
+                <!--<span class="nav-group-item">-->
+                    <!--<span class="icon icon-folder"></span>-->
+                    <!--Documents-->
+                <!--</span>-->
+                <!--<span class="nav-group-item">-->
+                    <!--<span class="icon icon-window"></span>-->
+                    <!--Applications-->
+                <!--</span>-->
+                <!--<span class="nav-group-item">-->
+                    <!--<span class="icon icon-signal"></span>-->
+                    <!--AirDrop-->
+                <!--</span>-->
+                <!--<span class="nav-group-item" id="desktop">-->
+                    <!--<span class="icon icon-monitor"></span>-->
+                    <!--Desktop-->
+                <!--</span>-->
+            <!--</nav>-->
+            <!--</div>-->
 
             <div class="pane">
 
 
 
                 <div class="panel editor-panel" id="editor-panel">
-                    <iframe  class="panel-iframe" src="editor.html" frameborder="0"></iframe>
+                    <iframe id="editor-iframe" class="panel-iframe" src1="editor.html" frameborder="0"></iframe>
                 </div>
                 <div class="panel preview-panel" id="preview-panel">
-                    <iframe  class="panel-iframe" src="preview.html" frameborder="0"></iframe>
+                    <iframe id="preview-iframe" class="panel-iframe" src1="preview.html" frameborder="0"></iframe>
                 </div>
 
 
@@ -218,7 +222,7 @@
 
 
 
-            </div>
+        </div>
         </div>
     </div>
 </div>
