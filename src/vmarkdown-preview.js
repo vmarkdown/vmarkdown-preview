@@ -26,14 +26,14 @@ export default Vue.extend({
     //         msg: 'Hello world!'
     //     }
     // },
-    computed: {
-        vdom () {
-            return this.$store.state.vmarkdown.value;
-        },
-        firstVisibleNode() {
-            return this.$store.state.vmarkdown.firstVisibleNode;
-        },
-    },
+    // computed: {
+    //     vdom () {
+    //         return this.$store.state.vmarkdown.value;
+    //     },
+    //     firstVisibleNode() {
+    //         return this.$store.state.vmarkdown.firstVisibleNode;
+    //     },
+    // },
     // watch: {
     //     firstVisibleNode(node) {
     //         const self = this;
@@ -42,12 +42,16 @@ export default Vue.extend({
     // },
     beforeCreate(){
         // this.vmarkdown = this.$options.vmarkdown;
-        this.$store._vue = this;
+        // this.$store._vue = this;
+        this.$store = this.$options.store;
+        // debugger
     },
     beforeMount() {
         const self = this;
         // self.vmarkdown.h = self.$createElement;
-        self.$store.commit('vmarkdown/h', self.$createElement);
+        // self.$store.commit('vmarkdown/h', self.$createElement);
+
+        self.$store.$emit('vmarkdown/h', self.$createElement);
     },
     methods: {
         getDom(node) {

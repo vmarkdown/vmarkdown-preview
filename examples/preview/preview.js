@@ -1,12 +1,9 @@
-const __store__ = window.top.__store__;
+const store = window.top.__store__;
 
 
-import store from '../store'
-
-
+// import store from '../store'
 // const $ = require('jquery');
 // import Vue from 'vue';
-
 // Vue.use(VMarkDown);
 
 
@@ -21,17 +18,17 @@ const app = new Preview({
 });
 
 
-__store__.$on('vmarkdown/parse', function (md) {
-    store.dispatch('vmarkdown/parse', md);
-});
-
-__store__.$on('vmarkdown/scrollTo', function (firstVisibleLine) {
-    store.commit('vmarkdown/scrollTo', firstVisibleLine);
-});
-
-__store__.$on('vmarkdown/activeTo', function (cursor) {
-    store.commit('vmarkdown/activeTo', cursor);
-});
+// __store__.$on('vmarkdown/parse', function (md) {
+//     store.dispatch('vmarkdown/parse', md);
+// });
+//
+// __store__.$on('vmarkdown/scrollTo', function (firstVisibleLine) {
+//     store.commit('vmarkdown/scrollTo', firstVisibleLine);
+// });
+//
+// __store__.$on('vmarkdown/activeTo', function (cursor) {
+//     store.commit('vmarkdown/activeTo', cursor);
+// });
 
 //
 // const md = require('../md/demo.md');
