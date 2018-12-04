@@ -13,10 +13,7 @@ $.scrollTo && $.extend($.scrollTo.defaults, {
 });
 
 import Vue from 'vue';
-// import Vuex from 'vuex';
-// Vue.use(Vuex);
 import VMarkdown from 'vmarkdown-render';
-
 
 const ACTIVE_CLASS = 'vmarkdown-preview-active';
 const ACTIVE_CLASS_DURATION = 1000;
@@ -74,7 +71,42 @@ export default Vue.extend({
             }
             self._scrollTo(target, options);
         },
+        activeTo({node, coverageRatio = 0, cursor}) {
+            const self = this;
 
+            if(!node) {
+                return;
+            }
+
+            const target = self.getDom(node);
+            if(!target) return;
+
+            var $target = $(target);
+            $target.addClass(ACTIVE_CLASS);
+            setTimeout(function () {
+                $target.removeClass(ACTIVE_CLASS);
+            }, ACTIVE_CLASS_DURATION);
+
+            const options = {};
+
+            if(cursor) {
+                Object.assign(options, {
+                    offset: {
+                        top: -1 * cursor.top
+                    }
+                })
+            }
+
+            if(coverageRatio) {
+                Object.assign(options, {
+                    over: {
+                        top: coverageRatio
+                    }
+                })
+            }
+
+            self._scrollTo(target, options);
+        },
 
 
 

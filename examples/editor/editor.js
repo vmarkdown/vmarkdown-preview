@@ -32,6 +32,36 @@ const vmarkdown = new VMarkdown({
         console.log(cursor);
         // localStorage.setItem("cursorChange", JSON.stringify(cursor));
         // store.$emit('vmarkdown/activeTo', cursor);
+
+
+        const node = vmarkdown.findNode(cursor, {
+            depth: 2
+        });
+
+        // console.log(node);
+
+        // debugger
+
+        let coverageRatio = 0;
+        if(node) {
+            const position = node.position;
+            if( position && position.start.line < position.end.line) {
+                const firstVisibleLine = cursor.line;
+                const startLine = position.start.line;
+                const endLine = position.end.line;
+                const currentLine = firstVisibleLine<startLine?startLine:firstVisibleLine;
+                const allLine = endLine - startLine + 1;
+                coverageRatio = (currentLine-startLine)/allLine;
+            }
+
+        }
+
+        store.$emit('cursorChange', {
+            node,
+            coverageRatio,
+            cursor: cursor
+        });
+
     });
 
     function onScroll() {
