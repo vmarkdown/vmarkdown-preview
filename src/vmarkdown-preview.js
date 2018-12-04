@@ -83,6 +83,11 @@ export default Vue.extend({
         activeTo({node, coverageRatio = 0, cursor}) {
             const self = this;
 
+            if(self._$target){
+                self._$target.removeClass(ACTIVE_CLASS);
+                self._$target = null;
+            }
+
             if(!node) {
                 return;
             }
@@ -91,6 +96,7 @@ export default Vue.extend({
             if(!target) return;
 
             var $target = $(target);
+            self._$target = $target;
             $target.addClass(ACTIVE_CLASS);
             setTimeout(function () {
                 $target.removeClass(ACTIVE_CLASS);
