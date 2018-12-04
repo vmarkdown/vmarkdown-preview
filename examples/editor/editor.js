@@ -100,7 +100,7 @@ const vmarkdown = new VMarkdown({
     }
 
     // editor.on('scroll', onScroll);
-    editor.on('scroll', _.throttle(onScroll, 300));
+    editor.on('scroll', _.throttle(onScroll, 100));
 
     async function onChange() {
         // localStorage.setItem("change", editor.getValue());

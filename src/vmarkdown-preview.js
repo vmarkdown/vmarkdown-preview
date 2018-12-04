@@ -1,15 +1,18 @@
 require("github-markdown-css");
 require('./vmarkdown-preview.scss');
 
+require("./loading/loading.css");
+
 const $ = require('jquery');
 require('jquery.scrollto');
 require('jquery.easing');
 
 $.scrollTo && $.extend($.scrollTo.defaults, {
     axis: 'y',
-    duration: 200,
+    duration: 300,
     interrupt: true,
-    queue : false
+    queue : false,
+    easing: 'easeOutQuad'
     // easing: 'easeOutQuart'
 });
 
@@ -20,7 +23,6 @@ const ACTIVE_CLASS = 'vmarkdown-preview-active';
 const ACTIVE_CLASS_DURATION = 1000;
 
 function _scrollTo(target, options) {
-    console.log('_scrollTo');
     if(!target) return;
     $( window ).stop();
     $( window ).stop( true ).scrollTo(target, options);
@@ -116,7 +118,16 @@ export default Vue.extend({
         }
     },
     render(h) {
-        return this.vdom || h('div', {style:{'text-align':'center'}}, 'loading...');
+        return this.vdom || h('div', {
+            style:{
+                'text-align':'center',
+                'max-width': '150px',
+                'margin': '100px auto'
+            },
+            domProps:{
+                innerHTML: require('./loading/loading.svg')
+            }
+        }, 'loading...');
         // return this.vdom || h('div', {}, ['loading...', this.value]);
     },
     mounted() {

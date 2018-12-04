@@ -56,7 +56,7 @@ module.exports = {
             },
             { test: /\.vue$/, use: 'vue-loader' },
             {
-                test: /\.(md|html)$/,
+                test: /\.(md|html|svg)$/,
                 use: 'text-loader'
             },
             {
