@@ -25,7 +25,9 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'vmarkdown': path.resolve(__dirname, 'www/vmarkdown', 'vmarkdown.js'),
+            // 'vmarkdown': path.resolve(__dirname, 'www/vmarkdown', 'vmarkdown.js'),
+            'vmarkdown-parse': path.resolve(__dirname, 'www/vmarkdown', 'vmarkdown-parse.js'),
+            'vmarkdown-render': path.resolve(__dirname, 'www/vmarkdown', 'vmarkdown-render.js'),
         }
     },
     module: {

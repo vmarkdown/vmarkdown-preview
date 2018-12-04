@@ -13,9 +13,70 @@ import Preview from '../../src/vmarkdown-preview';
 // import Vue from "vue";
 
 const app = new Preview({
-    el: '#app',
-    store
+    el: '#app'
 });
+
+// app.setValue(
+//
+//     {
+//         type: 'root',
+//         tagName: 'main',
+//         position: {
+//             start: {
+//                 line: 1,
+//                 column: 2
+//             },
+//             end: {
+//                 line: 1,
+//                 column: 2
+//             }
+//         },
+//         children: [
+//             {
+//                 type: 'element',
+//                 tagName: 'p',
+//                 position: {
+//                     start: {
+//                         line: 1,
+//                         column: 2
+//                     },
+//                     end: {
+//                         line: 1,
+//                         column: 2
+//                     }
+//                 },
+//                 children: [
+//
+//                     {
+//                         type: 'text',
+//                         tagName: 'span',
+//                         position: {
+//                             start: {
+//                                 line: 1,
+//                                 column: 2
+//                             },
+//                             end: {
+//                                 line: 1,
+//                                 column: 2
+//                             }
+//                         },
+//                         value: '========='
+//
+//                     }
+//
+//                 ]
+//
+//             }
+//         ]
+//     }
+//
+// );
+
+store.$on('change', function (vast) {
+    app.setValue(vast);
+});
+
+
 
 
 // __store__.$on('vmarkdown/parse', function (md) {

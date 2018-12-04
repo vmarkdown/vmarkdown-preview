@@ -13,8 +13,10 @@ $.scrollTo && $.extend($.scrollTo.defaults, {
 });
 
 import Vue from 'vue';
-import Vuex from 'vuex';
-Vue.use(Vuex);
+// import Vuex from 'vuex';
+// Vue.use(Vuex);
+import VMarkdown from 'vmarkdown-render';
+
 
 const ACTIVE_CLASS = 'vmarkdown-preview-active';
 const ACTIVE_CLASS_DURATION = 1000;
@@ -43,15 +45,18 @@ export default Vue.extend({
     beforeCreate(){
         // this.vmarkdown = this.$options.vmarkdown;
         // this.$store._vue = this;
-        this.$store = this.$options.store;
+        // this.$store = this.$options.store;
         // debugger
     },
     beforeMount() {
         const self = this;
         // self.vmarkdown.h = self.$createElement;
         // self.$store.commit('vmarkdown/h', self.$createElement);
+        // self.$store.$emit('vmarkdown/h', self.$createElement);
 
-        self.$store.$emit('vmarkdown/h', self.$createElement);
+        self.vmarkdown = new VMarkdown({
+            h: this.$createElement
+        });
     },
     methods: {
         getDom(node) {
@@ -59,17 +64,22 @@ export default Vue.extend({
             const self = this;
             if(node.data && node.data.ref) {
                 var dom = self.$refs[node.data.ref];
-                if(dom._isVue) {
+                if(dom && dom._isVue) {
                     dom = dom.$el;
                 }
                 return dom;
             }
             return null;
         },
-        async setValue(md) {
-            this.vdom = await this.vmarkdown.process(md);
+        async setValue(vast) {
+            this.vdom = await this.vmarkdown.process(vast);
             this.$forceUpdate();
         },
+
+        // async setValue(md) {
+        //     this.vdom = await this.vmarkdown.process(md);
+        //     this.$forceUpdate();
+        // },
         _scrollTo(target, options) {
             if(!target) return;
             // const self = this;
@@ -120,7 +130,7 @@ export default Vue.extend({
             // }
             // self.cancelScroll = $.scrollTo(target);
         },
-        scrollTo(firstVisibleLine) {
+        b_scrollTo(firstVisibleLine) {
 
             if(!firstVisibleLine || firstVisibleLine <= 1) {
                 $.scrollTo({
@@ -143,7 +153,7 @@ export default Vue.extend({
             }
             self._scrollTo(target, options);
         },
-        activeTo(cursor) {
+        b_activeTo(cursor) {
             const self = this;
 
             // if(self.activeEl) {
@@ -193,7 +203,7 @@ export default Vue.extend({
         }
     },
     render(h) {
-        return this.vdom || h('div', {}, 'loading...');
+        return this.vdom || h('div', {style:{'text-align':'center'}}, 'loading...');
         // return this.vdom || h('div', {}, ['loading...', this.value]);
     },
     mounted() {
