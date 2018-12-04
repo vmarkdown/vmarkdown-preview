@@ -55,7 +55,7 @@ export default Vue.extend({
             this.$forceUpdate();
         },
         scrollTo({node, coverageRatio = 0, firstVisibleLine}) {
-
+            const self = this;
             if(!firstVisibleLine || firstVisibleLine <= 1) {
                 // $.scrollTo({
                 //     top: 0
@@ -71,7 +71,7 @@ export default Vue.extend({
                 return;
             }
 
-            const self = this;
+
             const target = self.getDom(node);
 
             const options = {};
