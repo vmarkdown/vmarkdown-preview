@@ -4,7 +4,7 @@ import Preview from '../../src/vmarkdown-preview';
 
 const preview = new Preview({
     el: '#app',
-    scrollContainer: '#preview'
+    scrollContainer: window
 });
 
 store.$on('change', function (vast) {
