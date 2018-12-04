@@ -16,65 +16,13 @@ const app = new Preview({
     el: '#app'
 });
 
-// app.setValue(
-//
-//     {
-//         type: 'root',
-//         tagName: 'main',
-//         position: {
-//             start: {
-//                 line: 1,
-//                 column: 2
-//             },
-//             end: {
-//                 line: 1,
-//                 column: 2
-//             }
-//         },
-//         children: [
-//             {
-//                 type: 'element',
-//                 tagName: 'p',
-//                 position: {
-//                     start: {
-//                         line: 1,
-//                         column: 2
-//                     },
-//                     end: {
-//                         line: 1,
-//                         column: 2
-//                     }
-//                 },
-//                 children: [
-//
-//                     {
-//                         type: 'text',
-//                         tagName: 'span',
-//                         position: {
-//                             start: {
-//                                 line: 1,
-//                                 column: 2
-//                             },
-//                             end: {
-//                                 line: 1,
-//                                 column: 2
-//                             }
-//                         },
-//                         value: '========='
-//
-//                     }
-//
-//                 ]
-//
-//             }
-//         ]
-//     }
-//
-// );
-
 store.$on('change', function (vast) {
     app.setValue(vast);
 });
+store.$on('scrollTo', function (options) {
+    app.scrollTo(options);
+});
+
 
 
 

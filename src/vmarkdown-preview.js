@@ -7,7 +7,7 @@ require('jquery.easing');
 
 $.scrollTo && $.extend($.scrollTo.defaults, {
     axis: 'y',
-    duration: 100,
+    duration: 300,
     interrupt: true,
     // easing: 'easeOutQuart'
 });
@@ -23,37 +23,9 @@ const ACTIVE_CLASS_DURATION = 1000;
 
 
 export default Vue.extend({
-    // data () {
-    //     return {
-    //         msg: 'Hello world!'
-    //     }
-    // },
-    // computed: {
-    //     vdom () {
-    //         return this.$store.state.vmarkdown.value;
-    //     },
-    //     firstVisibleNode() {
-    //         return this.$store.state.vmarkdown.firstVisibleNode;
-    //     },
-    // },
-    // watch: {
-    //     firstVisibleNode(node) {
-    //         const self = this;
-    //         self.scrollTo(node);
-    //     }
-    // },
-    beforeCreate(){
-        // this.vmarkdown = this.$options.vmarkdown;
-        // this.$store._vue = this;
-        // this.$store = this.$options.store;
-        // debugger
-    },
+    beforeCreate(){},
     beforeMount() {
         const self = this;
-        // self.vmarkdown.h = self.$createElement;
-        // self.$store.commit('vmarkdown/h', self.$createElement);
-        // self.$store.$emit('vmarkdown/h', self.$createElement);
-
         self.vmarkdown = new VMarkdown({
             h: this.$createElement
         });
@@ -75,6 +47,52 @@ export default Vue.extend({
             this.vdom = await this.vmarkdown.process(vast);
             this.$forceUpdate();
         },
+
+        scrollTo({node, coverageRatio = 0, firstVisibleLine}) {
+
+            if(!firstVisibleLine || firstVisibleLine <= 1) {
+                $.scrollTo({
+                    top: 0
+                });
+                return;
+            }
+
+            if(!node) {
+                return;
+            }
+
+            const self = this;
+            const target = self.getDom(node);
+
+            const options = {};
+            if(coverageRatio) {
+                Object.assign(options, {
+                    over: {
+                        top: coverageRatio
+                    }
+                });
+            }
+            self._scrollTo(target, options);
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // async setValue(md) {
         //     this.vdom = await this.vmarkdown.process(md);
