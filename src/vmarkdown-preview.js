@@ -57,7 +57,11 @@ export default Vue.extend({
         scrollTo({node, coverageRatio = 0, firstVisibleLine}) {
 
             if(!firstVisibleLine || firstVisibleLine <= 1) {
-                $.scrollTo({
+                // $.scrollTo({
+                //     top: 0
+                // });
+                const scrollContainer = self.$options.scrollContainer;
+                $(scrollContainer).scrollTo({
                     top: 0
                 });
                 return;
