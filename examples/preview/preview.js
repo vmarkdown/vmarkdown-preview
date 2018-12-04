@@ -2,18 +2,19 @@ const store = window.top.__store__;
 
 import Preview from '../../src/vmarkdown-preview';
 
-const app = new Preview({
-    el: '#app'
+const preview = new Preview({
+    el: '#app',
+    scrollContainer: '#preview'
 });
 
 store.$on('change', function (vast) {
-    app.setValue(vast);
+    preview.setValue(vast);
 });
 store.$on('scrollTo', function (options) {
-    app.scrollTo(options);
+    preview.scrollTo(options);
 });
 store.$on('cursorChange', function (options) {
-    app.activeTo(options);
+    preview.activeTo(options);
 });
 
 

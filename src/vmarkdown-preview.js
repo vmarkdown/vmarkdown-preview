@@ -22,10 +22,11 @@ import VMarkdown from 'vmarkdown-render';
 const ACTIVE_CLASS = 'vmarkdown-preview-active';
 const ACTIVE_CLASS_DURATION = 1000;
 
-function _scrollTo(target, options) {
+function _scrollTo(scrollContainer, target, options) {
     if(!target) return;
-    $( window ).stop();
-    $( window ).stop( true ).scrollTo(target, options);
+    scrollContainer = scrollContainer || window;
+    $( scrollContainer ).stop();
+    $( scrollContainer ).stop( true ).scrollTo(target, options);
 }
 
 export default Vue.extend({
@@ -78,7 +79,8 @@ export default Vue.extend({
                 });
             }
 
-            _scrollTo(target, options);
+            const scrollContainer = self.$options.scrollContainer;
+            _scrollTo(scrollContainer, target, options);
         },
         activeTo({node, coverageRatio = 0, cursor}) {
             const self = this;
@@ -120,7 +122,8 @@ export default Vue.extend({
                 })
             }
 
-            _scrollTo(target, options);
+            const scrollContainer = self.$options.scrollContainer;
+            _scrollTo(scrollContainer, target, options);
         }
     },
     render(h) {
