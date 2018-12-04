@@ -18,13 +18,15 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'vmarkdown': path.resolve(__dirname, 'examples/www/vmarkdown', 'vmarkdown.js'),
+            // 'vmarkdown': path.resolve(__dirname, 'examples/www/vmarkdown', 'vmarkdown.js'),
+            'vmarkdown-parse': path.resolve(__dirname, 'examples/www/vmarkdown', 'vmarkdown-parse.js'),
+            'vmarkdown-render': path.resolve(__dirname, 'examples/www/vmarkdown', 'vmarkdown-render.js'),
         }
     },
     module: {
         rules: [
             {
-                test: /\.md$/,
+                test: /\.(md|svg)$/,
                 use: 'text-loader'
             },
             {
