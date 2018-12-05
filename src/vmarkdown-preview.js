@@ -17,7 +17,7 @@ $.scrollTo && $.extend($.scrollTo.defaults, {
 });
 
 import Vue from 'vue';
-import VMarkdown from 'vmarkdown-render';
+// import VMarkdown from 'vmarkdown-render';
 
 const ACTIVE_CLASS = 'vmarkdown-preview-active';
 const ACTIVE_CLASS_DURATION = 2000;
@@ -33,9 +33,18 @@ export default Vue.extend({
     beforeCreate(){},
     beforeMount() {
         const self = this;
-        self.vmarkdown = new VMarkdown({
-            h: this.$createElement
-        });
+        // const settings = self.$options.settings;
+        // const plugins = self.$options.plugins;
+        // self.vmarkdown = new VMarkdown(Object.assign({}, settings, {
+        //     h: this.$createElement
+        // }));
+
+        // self.vmarkdown = new VMarkdown({
+        //     h: this.$createElement,
+        //     plugins: plugins
+        // });
+
+        // self.vmarkdown = self.$options.vmarkdown;
     },
     methods: {
         getDom(node) {
@@ -50,10 +59,16 @@ export default Vue.extend({
             }
             return null;
         },
-        async setValue(vast) {
-            this.vdom = await this.vmarkdown.process(vast);
+
+        setValue(vdom) {
+            this.vdom = vdom;
             this.$forceUpdate();
         },
+
+        // async setValue(vast) {
+        //     this.vdom = await this.vmarkdown.process(vast);
+        //     this.$forceUpdate();
+        // },
         scrollTo({node, coverageRatio = 0, firstVisibleLine}) {
             const self = this;
             if(!firstVisibleLine || firstVisibleLine <= 1) {
