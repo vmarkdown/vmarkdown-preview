@@ -131,22 +131,21 @@ export default Vue.extend({
         }
     },
     render(h) {
-        return this.vdom || h('div', {
-            style:{
-                'text-align':'center',
-                'max-width': '150px',
-                'margin': '100px auto'
-            },
-            domProps:{
-                innerHTML: require('./loading/loading.svg')
-            }
-        }, 'loading...');
-        // return this.vdom || h('div', {}, ['loading...', this.value]);
-    },
-    mounted() {
-        // const self = this;
-        // self.$watch('firstVisibleNode', function (node) {
-        //     self.scrollTo(node);
-        // });
+
+        return h('div', {
+            class: ['vmarkdown-preview']
+        }, [
+            this.vdom || h('div', {
+                style:{
+                    'text-align':'center',
+                    'max-width': '150px',
+                    'margin': '100px auto'
+                },
+                domProps:{
+                    innerHTML: require('./loading/loading.svg')
+                }
+            })
+        ]);
+
     }
 });
