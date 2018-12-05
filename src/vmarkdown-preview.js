@@ -16,7 +16,7 @@ $.scrollTo && $.extend($.scrollTo.defaults, {
     // easing: 'easeOutQuart'
 });
 
-import Vue from 'vue';
+// import Vue from 'vue';
 // import VMarkdown from 'vmarkdown-render';
 
 const ACTIVE_CLASS = 'vmarkdown-preview-active';
@@ -29,7 +29,7 @@ function _scrollTo(scrollContainer, target, options) {
     $( scrollContainer ).stop( true ).scrollTo(target, options);
 }
 
-export default Vue.extend({
+export default {
     beforeCreate(){},
     beforeMount() {
         const self = this;
@@ -163,4 +163,4 @@ export default Vue.extend({
         ]);
 
     }
-});
+};

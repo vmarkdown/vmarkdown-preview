@@ -1,13 +1,15 @@
 const store = window.top.__store__;
 
+import Vue from 'vue';
 import VMarkdown from 'vmarkdown-render';
 
-
-import Preview from '../../src/vmarkdown-preview';
+import PreviewComponent from '../../src/vmarkdown-preview';
 
 window.onload = init;
 
 function init() {
+
+    const Preview = Vue.extend(PreviewComponent);
 
     const preview = new Preview({
         el: '#app',
@@ -15,8 +17,7 @@ function init() {
     });
 
     const vmarkdown = new VMarkdown({
-        h: preview.$createElement,
-        plugins: null
+        h: preview.$createElement
     });
 
     store.$on('change', async function (vast) {
@@ -29,6 +30,7 @@ function init() {
     store.$on('cursorChange', function (options) {
         preview.activeTo(options);
     });
+
 }
 
 
