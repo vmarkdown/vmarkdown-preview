@@ -20,7 +20,7 @@ import Vue from 'vue';
 import VMarkdown from 'vmarkdown-render';
 
 const ACTIVE_CLASS = 'vmarkdown-preview-active';
-const ACTIVE_CLASS_DURATION = 1000;
+const ACTIVE_CLASS_DURATION = 2000;
 
 function _scrollTo(scrollContainer, target, options) {
     if(!target) return;

@@ -1,10 +1,19 @@
+@keyframes vmarkdown-preview-active {
+    0% {
+        background-color: rgba(232, 242, 255, 1);
+    }
+    100% {
+        background-color: rgba(232, 242, 255, 0);
+    }
+}
+
+
 .vmarkdown-preview {
 
     padding-bottom: 100vh;
 
     .vmarkdown-preview-active {
-        //transition:background-color 2s ease-out;
-        background-color: #e8f2ff!important;
+        animation:vmarkdown-preview-active 2s;
     }
 }
 
